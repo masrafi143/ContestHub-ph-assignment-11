@@ -1,2 +1,43 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default, dark;
+}
+
+/* ─── LIGHT THEME ────────────────────────────────── */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+
+  /* Main Colors */
+  --color-primary: #4C1D95;     /* Deep Purple */
+  --color-secondary: #1E3A8A;   /* Navy Blue */
+  --color-accent: #F59E0B;      /* Warm Orange-Yellow */
+
+  /* Backgrounds */
+  --color-base-200: #F3F4F6;    /* Light Gray Background */
+  --color-base-300: #E5E7EB;    /* Navbar Light */
+
+  /* Additional UI Colors */
+  --color-info: #0284C7;
+  --color-success: #10B981;
+  --color-warning: #FBBF24;
+  --color-error: #DC2626;
+}
+
+
+/* ─── DARK THEME ────────────────────────────────── */
+@plugin "daisyui/theme" {
+  name: "dark";
+
+  --color-primary: #7C3AED;     /* Bright Purple */
+  --color-secondary: #0F172A;   /* Deep Navy */
+  --color-accent: #FACC15;      /* Yellow Accent */
+
+  --color-base-200: #0B0F1A;    /* Almost Black Blue BG */
+  --color-base-300: #1E1B4B;    /* Dark Purple Navbar */
+
+  --color-info: #38BDF8;
+  --color-success: #34D399;
+  --color-warning: #FDE047;
+  --color-error: #F87171;
+}
