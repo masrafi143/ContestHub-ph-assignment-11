@@ -1,10 +1,4 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Active NavLink */
-.nav-links .active {
-  text-decoration: underline;
-  color: #ff6200; /* yellow-orange accent */
-  font-weight: bold;
-} */
+.nav-links .active{
+    text-decoration: underline;
+    color: #ff6200;
+}

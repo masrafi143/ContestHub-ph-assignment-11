@@ -5,6 +5,8 @@ import HomeLayout from "../layouts/HomeLayout/HomeLayout";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import Error404 from "../Error404/Error404";
+import AboutContest from "../pages/AboutContest/AboutContest";
+import HowItWorks from "../pages/HowItWorks/HowItWorks";
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +24,15 @@ export const router = createBrowserRouter([
       {
         path: 'register',
         Component: Register
-      }
+      },
+      {
+        path: 'about',
+        Component: AboutContest
+      },
+      {
+        path: 'how-it-works',
+        Component: HowItWorks
+      },
     ],
   },
   {
