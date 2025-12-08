@@ -159,7 +159,7 @@ const EditContest = () => {
           ></textarea>
           {errors.instruction && <p className="text-red-500">Instruction required</p>}
         </div>
-
+ 
         {/* Contest Type */}
         <div className="mb-5">
           <label>Contest Type</label>
