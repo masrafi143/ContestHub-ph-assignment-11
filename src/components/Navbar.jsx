@@ -1,106 +1,111 @@
-import { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link, NavLink } from "react-router";
 import { FaMoon, FaSun } from "react-icons/fa";
+import { AuthContext } from "../provider/AuthProvider";
 
-const Navbar = ({ user, handleLogout }) => {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+const Navbar = () => {
+  const { user, dbUser, logOut, dark, setDark } = useContext(AuthContext);
+  console.log(user)
+  console.log(dbUser)
 
-  // Apply theme to HTML via data-theme (DaisyUI Standard)
-  useEffect(() => {
-    document.querySelector("html").setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  const demoUser = {
+    image:
+      "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
+  };
+
+  const profileImage = dbUser?.image || demoUser.image;
+  const displayName = dbUser?.name;
+  const displayEmail = dbUser?.email;
+
+  const handleToggleMode = () => setDark(!dark);
+  const handleLogout = () => logOut().catch((err) => console.log(err));
+
+  const links = (
+    <>
+      <li>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-yellow-400 underline" : ""}>
+          Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/all-contests" className={({ isActive }) => isActive ? "text-yellow-400 underline" : ""}>
+          All Contests
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/leaderboard" className={({ isActive }) => isActive ? "text-yellow-400 underline" : ""}>
+          Leaderboard
+        </NavLink>
+      </li>
+    </>
+  );
 
   return (
-    <div className="w-full shadow sticky top-0 z-50 bg-base-300">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img
-            src={
-              theme === "dark"
-                ? "/dark-mode-logo.png"
-                : "/contesthub-full-logo.png"
-            }
-            alt="logo"
-            className="w-70 h-20"
-          />
-        </Link>
+    <nav className={`shadow-sm transition-colors duration-300 ${dark ? "bg-gray-900 text-white" : "bg-base-300 text-gray-900"}`}>
+      <div className="navbar md:w-11/12 md:mx-auto">
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6 nav-links">
-          <NavLink
-            to="/"
-            className="text-purple-700 md: font-bold hover:text-primary"
-          >
-            Home
-          </NavLink>
+        {/* Left section */}
+        <div className="navbar-start">
+          {/* Mobile dropdown */}
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </div>
+            <ul tabIndex={0} className={`menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow rounded-box w-52 ${dark ? "bg-gray-800 text-white" : "bg-base-100 text-gray-900"}`}>
+              {links}
+            </ul>
+          </div>
 
-          <NavLink
-            to="/all-contests"
-            className="text-purple-700 md: font-bold hover:text-primary"
-          >
-            All Contests
-          </NavLink>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
+            <img
+              src={dark ? "/dark-mode-logo.png" : "/contesthub-full-logo.png"}
+              className="w-70 h-20"
+              alt="ContestHub logo"
+            />
+          </Link>
+        </div>
 
-          <NavLink
-            to="/leaderboard"
-            className="text-purple-700 md: font-bold hover:text-primary"
-          >
-            Leaderboard
-          </NavLink>
+        {/* Desktop Links */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1 space-x-4 font-semibold">{links}</ul>
+        </div>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-full bg-base-200 text-base-content"
-          >
-            {theme === "dark" ? <FaSun /> : <FaMoon />}
+        {/* Right section */}
+        <div className="navbar-end flex items-center gap-3">
+
+          {/* Theme toggle */}
+          <button onClick={handleToggleMode} className="p-2 rounded-full bg-base-200 text-base-content">
+            {dark ? <FaSun /> : <FaMoon />}
           </button>
 
-          {/* Profile Section */}
-          {user ? (
-            <div className="relative group">
-              <img
-                src={user.photoURL}
-                alt="profile"
-                className="w-10 h-10 rounded-full cursor-pointer border"
-              />
-              {/* Dropdown */}
-              <div className="absolute right-0 mt-2 hidden group-hover:block bg-base-200 dark:bg-gray-800 shadow-lg rounded p-3 w-40">
-                <p className="text-sm font-semibold text-base-content mb-2">
-                  {user.displayName}
-                </p>
-                <Link
-                  to="/dashboard"
-                  className="block py-1 text-base-content hover:text-primary"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left py-1 text-red-500"
-                >
-                  Logout
-                </button>
+          {/* Auth section */}
+          {dbUser ? (
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="cursor-pointer">
+                <img src={profileImage} alt="Profile" className="rounded-full h-10 w-10 object-cover border-2 border-primary" />
               </div>
+              <ul tabIndex={0} className={`dropdown-content menu rounded-box w-56 p-2 shadow mt-2 ${dark ? "bg-gray-800 text-white" : "bg-base-100 text-gray-900"}`}>
+                <li className="text-center font-bold text-lg">{displayName}</li>
+                <li className="text-center text-sm text-primary">{displayEmail}</li>
+                <li className="mt-2">
+                  <button onClick={handleLogout} className="btn bg-primary text-white w-full rounded-full">
+                    Logout
+                  </button>
+                </li>
+              </ul>
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="px-4 py-2 rounded bg-primary text-white hover:bg-secondary"
-            >
-              Login
-            </Link>
+            <div className="flex gap-2">
+              <Link to="/login" className="btn bg-primary text-white hover:text-primary hover:bg-yellow-400">Login</Link>
+              <Link to="/register" className="btn bg-yellow-400 hover:text-white hover:bg-primary">Register</Link>
+            </div>
           )}
         </div>
-
-        {/* Mobile Menu */}
-        <div className="md:hidden">
-          <button className="text-gray-900 dark:text-white text-2xl">☰</button>
-        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
