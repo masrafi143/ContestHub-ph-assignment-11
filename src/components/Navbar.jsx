@@ -27,6 +27,8 @@ const Navbar = () => {
       <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
       <li><NavLink to="/about">About</NavLink></li>
       <li><NavLink to="/how-it-works">How it works</NavLink></li>
+      <li><NavLink to="/add-contest">Add Contest</NavLink></li>
+      <li><NavLink to="/my-contests">My Contest</NavLink></li>
     </>
   );
 
