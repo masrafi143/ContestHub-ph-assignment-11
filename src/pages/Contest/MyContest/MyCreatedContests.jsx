@@ -174,5 +174,5 @@ const MyCreatedContests = () => {
     </div>
   );
 };
-
+ 
 export default MyCreatedContests;
