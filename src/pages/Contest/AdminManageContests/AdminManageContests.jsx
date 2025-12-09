@@ -61,7 +61,7 @@ export default function AdminManageContests() {
 
     try {
       setActionLoadingId(id);
-      const res = await fetch(`http://localhost:3000/contests/${id}`, {
+      const res = await fetch(`http://localhost:3000/contest-status/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

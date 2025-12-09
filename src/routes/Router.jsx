@@ -10,7 +10,9 @@ import HowItWorks from "../pages/HowItWorks/HowItWorks";
 import AddContest from "../pages/Contest/AddContest/AddContest";
 import MyCreatedContests from "../pages/Contest/MyContest/MyCreatedContests";
 import EditContest from "../pages/Contest/EditContest/EditContest";
-import AdminManageContests from "../pages/Contest/ManageContest/ManageContest";
+import AdminManageContests from "../pages/Contest/AdminManageContests/AdminManageContests";
+import AdminManageUsers from "../pages/AdminManageUsers/AdminManageUsers";
+import AllContests from "../pages/Contest/AllContests/AllContests";
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +54,15 @@ export const router = createBrowserRouter([
       {
         path: 'manage-contests',
         Component: AdminManageContests
-      }
+      },
+      {
+        path: 'manage-users',
+        Component: AdminManageUsers
+      },
+      {
+        path: 'all-contests',
+        Component: AllContests
+      },
     ],
   },
   {
