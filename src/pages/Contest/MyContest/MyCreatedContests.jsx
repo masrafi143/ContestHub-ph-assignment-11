@@ -60,16 +60,14 @@ const MyCreatedContests = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!userEmail)
-    return (
-      <p className="text-center mt-10 text-gray-500">
-        Please log in to see your created contests.
-      </p>
-    );
+  if (loading) return <p className="flex items-center justify-center mt-10 h-[50vh]">
+    <span>Loading  </span>  
+  <span className="loading loading-dots loading-md"></span>
+  </p>;
+
   if (contests.length === 0)
     return (
-      <p className="text-center mt-10 text-gray-500">
+      <p className="flex items-center justify-center mt-10 h-[50vh] text-gray-500">
         You have not created any contests yet.
       </p>
     );
