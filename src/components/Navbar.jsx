@@ -7,7 +7,6 @@ const Navbar = () => {
   const { user, dbUser, logOut, dark, setDark } = useContext(AuthContext);
   console.log(user)
   console.log(dbUser)
-
   const demoUser = {
     image:
       "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
@@ -79,7 +78,7 @@ const Navbar = () => {
           {dbUser ? (
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="cursor-pointer">
-                <img src={profileImage} alt="Profile" className="rounded-full h-10 w-10 object-cover border-2 border-primary" />
+                <img src={dbUser?.image || demoUser.image} alt="Profile" className="rounded-full h-10 w-10 object-cover border-2 border-primary" />
               </div>
               <ul tabIndex={0} className={`dropdown-content menu rounded-box w-56 p-2 shadow mt-2 ${dark ? "bg-gray-800 text-white" : "bg-base-100 text-gray-900"}`}>
                 <li className="text-center font-bold text-lg">{displayName}</li>

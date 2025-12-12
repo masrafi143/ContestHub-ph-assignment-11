@@ -60,14 +60,16 @@ const MyCreatedContests = () => {
     }
   };
 
-  if (loading) return <p className="flex items-center justify-center mt-10 h-[50vh]">
-    <span>Loading  </span>  
-  <span className="loading loading-dots loading-md"></span>
-  </p>;
-
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (!userEmail)
+    return (
+      <p className="text-center mt-10 text-gray-500">
+        Please log in to see your created contests.
+      </p>
+    );
   if (contests.length === 0)
     return (
-      <p className="flex items-center justify-center mt-10 h-[50vh] text-gray-500">
+      <p className="text-center mt-10 text-gray-500">
         You have not created any contests yet.
       </p>
     );
@@ -132,26 +134,16 @@ const MyCreatedContests = () => {
                 <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 flex gap-2">
                   {/* Edit button */}
                   <button
-                    disabled={item.status !== "pending"}
                     onClick={() => navigate(`/edit-contest/${item._id}`)} // navigate to edit page with ID
-                    className={`btn btn-sm btn-warning ${
-                      item.status !== "pending"
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className={`btn btn-sm btn-warning `}
                   >
                     Edit
                   </button>
 
                   {/* Delete button (only if Pending) */}
                   <button
-                    disabled={item.status !== "pending"}
                     onClick={() => handleDelete(item._id)}
-                    className={`btn btn-sm btn-error ${
-                      item.status !== "pending"
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className={`btn btn-sm btn-error `}
                   >
                     Delete
                   </button>

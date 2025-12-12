@@ -71,6 +71,7 @@ const AllContests = () => {
     }
     navigate(`/contests/${contestId}`);
   };
+  console.log(contests[0]?.price);
 
   return (
     <div className="min-h-screen w-11/12 mx-auto py-10">
@@ -159,6 +160,9 @@ const AllContests = () => {
                     : "No description."}
                 </p>
 
+                    <div className="text-red-500">
+                      Price: {c.price ? `${c.price}` : "—"}
+                    </div>
                 <div className="mt-4 flex items-center justify-between">
                   <div className="text-xs text-gray-500">
                     Prize: {c.prize ? `${c.prize}` : "—"}
