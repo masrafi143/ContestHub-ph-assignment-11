@@ -5,6 +5,7 @@ import { AuthContext } from "../../provider/AuthProvider";
 import SocialLogin from "./SocialLogin";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
@@ -12,6 +13,8 @@ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const axiosSecure = useAxiosSecure();
+
 
   const togglePassword = (e) => {
     e.preventDefault();
@@ -27,13 +30,13 @@ const Register = () => {
       const result = await createUser(email, password);
 
       // 2️⃣ Update Firebase profile
-      await updateUserProfile({ displayName: name, photoURL: photoURL || "" });
+      await updateUserProfile({ displayName: name, photoURL: photoURL || "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n" });
 
       // 3️⃣ Save user info in DB
       const userData = {
         name,
         email,
-        image: photoURL || "",
+        image: photoURL || "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
       };
 
       // Check if user already exists in DB

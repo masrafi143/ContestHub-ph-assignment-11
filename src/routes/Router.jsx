@@ -14,8 +14,11 @@ import AdminManageContests from "../pages/Contest/AdminManageContests/AdminManag
 import AdminManageUsers from "../pages/AdminManageUsers/AdminManageUsers";
 import AllContests from "../pages/Contest/AllContests/AllContests";
 import ContestDetails from "../pages/Contest/ContestDetails/ContestDetails";
-import paymentCancelled from "../pages/Contest/ContestDetails/paymentCancelled";
 import PaymentSuccess from "../pages/Contest/ContestDetails/paymentSuccess";
+import PaymentCancelled from "../pages/Contest/ContestDetails/paymentCancelled";
+import Leaderboard from "../pages/Leaderboard/Leaderboard";
+import Creator from "../pages/ContestCreator/Creator";
+
 
 export const router = createBrowserRouter([
   {
@@ -76,7 +79,15 @@ export const router = createBrowserRouter([
       },
       {
         path: 'contests/payment-cancelled',
-        Component: paymentCancelled
+        Component: PaymentCancelled
+      },
+      {
+        path: 'leaderboard',
+        Component: Leaderboard
+      },
+      {
+        path: 'creator',
+        Component: Creator
       },
     ],
   },

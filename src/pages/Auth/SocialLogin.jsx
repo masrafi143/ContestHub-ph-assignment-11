@@ -50,8 +50,8 @@ const SocialLogin = () => {
         const googleUser = {
           name: result.user.displayName || "",
           email: result.user.email,
-          image: result.user.photoURL || "",
-          role: "user", // default role for new users
+          image: result.user.photoURL || "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
+          // role: "user", // default role for new users
         };
 
         try {

@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link, NavLink } from "react-router";
 import { FaMoon, FaSun } from "react-icons/fa";
-import { AuthContext } from "../provider/AuthProvider";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
-  const { user, dbUser, logOut, dark, setDark } = useContext(AuthContext);
+  const { user, dbUser, logOut, dark, setDark } = useAuth();
   console.log(user)
   console.log(dbUser)
   const demoUser = {
@@ -30,6 +30,7 @@ const Navbar = () => {
       <li><NavLink to="/my-contests">My Contest</NavLink></li>
       <li><NavLink to="/manage-contests">Manage Contest</NavLink></li>
       <li><NavLink to="/manage-users">Manage Users</NavLink></li>
+      <li><NavLink to="/creator">Contest Creator</NavLink></li>
     </>
   );
 
