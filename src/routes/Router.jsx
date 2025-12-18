@@ -18,6 +18,7 @@ import PaymentSuccess from "../pages/Contest/ContestDetails/paymentSuccess";
 import PaymentCancelled from "../pages/Contest/ContestDetails/paymentCancelled";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
 import Creator from "../pages/ContestCreator/Creator";
+import ApproveCreators from "../pages/ApproveCreators/ApproveCreators";
 
 
 export const router = createBrowserRouter([
@@ -88,6 +89,10 @@ export const router = createBrowserRouter([
       {
         path: 'creator',
         Component: Creator
+      },
+      {
+        path: 'approve-creators',
+        Component: ApproveCreators
       },
     ],
   },

@@ -31,6 +31,7 @@ const Navbar = () => {
       <li><NavLink to="/manage-contests">Manage Contest</NavLink></li>
       <li><NavLink to="/manage-users">Manage Users</NavLink></li>
       <li><NavLink to="/creator">Contest Creator</NavLink></li>
+      <li><NavLink to="/approve-creators">Approve Creators</NavLink></li>
     </>
   );
 
