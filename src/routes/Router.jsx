@@ -10,16 +10,22 @@ import HowItWorks from "../pages/HowItWorks/HowItWorks";
 import AddContest from "../pages/Contest/AddContest/AddContest";
 import MyCreatedContests from "../pages/Contest/MyContest/MyCreatedContests";
 import EditContest from "../pages/Contest/EditContest/EditContest";
-import AdminManageContests from "../pages/Contest/AdminManageContests/AdminManageContests";
+import AdminManageContests from "../pages/Contest/AdminManageContests/ManageContests";
 import AdminManageUsers from "../pages/AdminManageUsers/AdminManageUsers";
 import AllContests from "../pages/Contest/AllContests/AllContests";
 import ContestDetails from "../pages/Contest/ContestDetails/ContestDetails";
 import PaymentSuccess from "../pages/Contest/ContestDetails/paymentSuccess";
 import PaymentCancelled from "../pages/Contest/ContestDetails/paymentCancelled";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
-import Creator from "../pages/ContestCreator/Creator";
+import Creator from "../pages/ContestCreator/ApplyCreator";
 import ApproveCreators from "../pages/ApproveCreators/ApproveCreators";
-
+import UsersManagement from "../pages/UserManagement/UserManagement";
+import AdminRoute from "./AdminRoute";
+import Dashboard from "../Layout/Dashboard/Dashboard";
+import CreatorRoute from "./CreatorRoute";
+import ApplyCreator from "../pages/ContestCreator/ApplyCreator";
+import ManageContests from "../pages/Contest/AdminManageContests/ManageContests";
+import MyProfile from "../pages/MyProfile/MyProfile";
 
 export const router = createBrowserRouter([
   {
@@ -31,73 +37,126 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path: 'login',
-        Component: Login
+        path: "login",
+        Component: Login,
       },
       {
-        path: 'register',
-        Component: Register
+        path: "register",
+        Component: Register,
       },
       {
-        path: 'about',
-        Component: AboutContest
+        path: "about",
+        Component: AboutContest,
       },
       {
-        path: 'how-it-works',
-        Component: HowItWorks
+        path: "how-it-works",
+        Component: HowItWorks,
+      },
+
+      {
+        path: "all-contests",
+        Component: AllContests,
       },
       {
-        path: 'add-contest',
-        Component: AddContest
+        path: "contests/:id",
+        Component: ContestDetails,
       },
       {
-        path: 'my-contests',
-        Component: MyCreatedContests
+        path: "contests/payment-success",
+        Component: PaymentSuccess,
       },
       {
-        path: 'edit-contest/:id',
-        Component: EditContest
+        path: "contests/payment-cancelled",
+        Component: PaymentCancelled,
       },
       {
-        path: 'manage-contests',
-        Component: AdminManageContests
+        path: "leaderboard",
+        Component: Leaderboard,
       },
+
       {
-        path: 'manage-users',
-        Component: AdminManageUsers
-      },
-      {
-        path: 'all-contests',
-        Component: AllContests
-      },
-      {
-        path: 'contests/:id',
-        Component: ContestDetails
-      },
-      {
-        path: 'contests/payment-success',
-        Component: PaymentSuccess
-      },
-      {
-        path: 'contests/payment-cancelled',
-        Component: PaymentCancelled
-      },
-      {
-        path: 'leaderboard',
-        Component: Leaderboard
-      },
-      {
-        path: 'creator',
-        Component: Creator
-      },
-      {
-        path: 'approve-creators',
-        Component: ApproveCreators
+        path: "user-management",
+        Component: UsersManagement,
       },
     ],
   },
   {
     path: "*",
-    Component: Error404
-  }
+    Component: Error404,
+  },
+  {
+    path: "dashboard",
+    Component: Dashboard,
+    children: [
+      {
+        path:'profile',
+        Component: MyProfile,
+      },
+      {
+        path: "manage-users",
+        element: (
+          <AdminRoute>
+            <AdminManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "apply-creator",
+        // Component: Creator,
+        element: (
+          <CreatorRoute>
+            <ApplyCreator />
+          </CreatorRoute>
+        ),
+      },
+      {
+        path: "add-contest",
+        // Component: AddContest,
+        element: (
+          <CreatorRoute>
+            <AddContest />
+          </CreatorRoute>
+        ),
+      },
+      {
+        path: "my-contests",
+        // Component: MyCreatedContests,
+        element: (
+          <CreatorRoute>
+            <MyCreatedContests />
+          </CreatorRoute>
+        ),
+      },
+      {
+        path: "edit-contest/:id",
+        Component: EditContest,
+      },
+      {
+        path: "manage-contests",
+        // Component: AdminManageContests
+        element: (
+          <AdminRoute>
+            <ManageContests />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        // Component: AdminManageUsers
+        element: (
+          <AdminRoute>
+            <AdminManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "approve-creators",
+        element: (
+          <AdminRoute>
+            <ApproveCreators />
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 ]);

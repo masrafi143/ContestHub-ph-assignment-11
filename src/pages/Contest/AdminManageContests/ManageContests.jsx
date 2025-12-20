@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../provider/AuthProvider"; // adjust path if needed
 
-export default function AdminManageContests() {
+export default function ManageContests() {
   const { dbUser } = useContext(AuthContext); // optional role check
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,16 +1,18 @@
-// src/pages/admin/AdminManageUsers.jsx
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import useAuth from "../../hooks/useAuth"; // adjust path if needed
+import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 export default function AdminManageUsers() {
-  const { dbUser } = useAuth(); // optional role check
+  const { dbUser } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [error, setError] = useState(null);
 
-  // toast (top-end)
+  // toast
   const fireToast = (title, icon = "success") => {
     Swal.fire({
       position: "top-end",
@@ -21,17 +23,16 @@ export default function AdminManageUsers() {
     });
   };
 
+  // load users
   const loadUsers = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:3000/users");
-      if (!res.ok) throw new Error("Failed to load users");
-      const data = await res.json();
-      setUsers(Array.isArray(data) ? data : []);
+      const res = await axiosSecure.get("/users");
+      setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
-      setError(err.message || "Error loading users");
+      setError("Failed to load users");
       setUsers([]);
     } finally {
       setLoading(false);
@@ -39,13 +40,11 @@ export default function AdminManageUsers() {
   };
 
   useEffect(() => {
-    // optionally guard by role:
-    // if (dbUser?.role !== 'admin') return;
     loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // change role handler
+  // change role (FIXED)
   const changeRole = async (userId, currentRole, newRole) => {
     if (currentRole === newRole) {
       fireToast("User already has this role", "info");
@@ -54,12 +53,10 @@ export default function AdminManageUsers() {
 
     const { isConfirmed } = await Swal.fire({
       title: "Change role?",
-      text: `Change role from "${currentRole}" to "${newRole}" for this user?`,
+      text: `Change role from "${currentRole}" to "${newRole}"?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, change to ${newRole}`,
+      confirmButtonText: "Yes, change role",
     });
 
     if (!isConfirmed) return;
@@ -67,27 +64,25 @@ export default function AdminManageUsers() {
     try {
       setActionLoadingId(userId);
 
-      // NOTE: change endpoint if your server expects /users/:id (original)
-      const res = await fetch(`http://localhost:3000/users-role/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: newRole }),
-      });
-      const result = await res.json();
+      const res = await axiosSecure.patch(
+        `/users-role/${userId}`,
+        { role: newRole }
+      );
 
-      // Accept backends that return { success: true } or modifiedCount
-      if (result.success || result.modifiedCount) {
-        fireToast(`Role updated to ${newRole}`, "success");
-        // optimistic update: update local users array
+      if (res.data.modifiedCount) {
+        fireToast(`Role updated to ${newRole}`);
+
         setUsers((prev) =>
-          prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u))
+          prev.map((u) =>
+            u._id === userId ? { ...u, role: newRole } : u
+          )
         );
       } else {
-        fireToast(result.message || "Failed to update role", "error");
+        fireToast("Role update failed", "error");
       }
     } catch (err) {
       console.error(err);
-      fireToast("Server error", "error");
+      fireToast("Unauthorized or server error", "error");
     } finally {
       setActionLoadingId(null);
     }
@@ -97,11 +92,9 @@ export default function AdminManageUsers() {
   const handleDeleteUser = async (userId) => {
     const { isConfirmed } = await Swal.fire({
       title: "Delete user?",
-      text: "This will remove the user. This cannot be undone.",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete",
     });
 
@@ -109,16 +102,11 @@ export default function AdminManageUsers() {
 
     try {
       setActionLoadingId(userId);
-      const res = await fetch(`http://localhost:3000/users/${userId}`, {
-        method: "DELETE",
-      });
-      const result = await res.json();
-      if (result.deletedCount || result.success) {
-        Swal.fire({
-          title: "Deleted!",
-          text: "User deleted.",
-          icon: "success",
-        });
+
+      const res = await axiosSecure.delete(`/users/${userId}`);
+
+      if (res.data.deletedCount) {
+        fireToast("User deleted");
         setUsers((prev) => prev.filter((u) => u._id !== userId));
       } else {
         fireToast("Delete failed", "error");
@@ -136,7 +124,7 @@ export default function AdminManageUsers() {
       <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
 
       {dbUser?.role !== "admin" && (
-        <div className="mb-4 p-3 rounded bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800">
+        <div className="mb-4 p-3 rounded bg-yellow-50 text-yellow-800">
           You are not an admin. Only admins should manage users.
         </div>
       )}
@@ -144,15 +132,15 @@ export default function AdminManageUsers() {
       {loading ? (
         <div className="p-6 text-center">Loading users...</div>
       ) : error ? (
-        <div className="p-6 text-center text-red-600">Error: {error}</div>
+        <div className="p-6 text-center text-red-600">{error}</div>
       ) : users.length === 0 ? (
         <div className="p-6 text-center text-gray-600">No users found.</div>
       ) : (
         <>
           {/* DESKTOP TABLE */}
-          <div className="hidden md:block overflow-x-auto bg-white dark:bg-gray-800 rounded-md shadow-sm">
+          <div className="hidden md:block overflow-x-auto bg-white rounded-md shadow-sm">
             <table className="min-w-full divide-y">
-              <thead className="bg-gray-100 dark:bg-gray-700">
+              <thead className="bg-gray-100">
                 <tr>
                   <th className="px-4 py-3 text-left">#</th>
                   <th className="px-4 py-3 text-left">User</th>
@@ -164,17 +152,14 @@ export default function AdminManageUsers() {
 
               <tbody className="bg-white divide-y">
                 {users.map((u, idx) => (
-                  <tr
-                    key={u._id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-900"
-                  >
-                    <td className="px-4 py-3 whitespace-nowrap">{idx + 1}</td>
+                  <tr key={u._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">{idx + 1}</td>
 
-                    <td className="px-4 py-3 whitespace-nowrap flex items-center gap-3">
+                    <td className="px-4 py-3 flex items-center gap-3">
                       <img
                         src={u.image || "/placeholder.png"}
                         alt={u.name || u.email}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-10 h-10 rounded-full"
                         onError={(e) =>
                           (e.currentTarget.src = "/placeholder.png")
                         }
@@ -187,31 +172,27 @@ export default function AdminManageUsers() {
                       </div>
                     </td>
 
-                    <td className="px-4 py-3 whitespace-nowrap">{u.email}</td>
+                    <td className="px-4 py-3">{u.email}</td>
 
-                    <td className="px-4 py-3 whitespace-nowrap capitalize">
-                      <span
-                        className={`px-2 py-1 rounded-full text-sm ${
-                          u.role === "admin"
-                            ? "bg-green-100 text-green-800"
-                            : u.role === "creator"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
+                    <td className="px-4 py-3 capitalize">
+                      <span className="px-2 py-1 rounded-full text-sm bg-gray-100">
                         {u.role || "user"}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex gap-2 items-center">
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
                         <select
                           value={u.role || "user"}
                           onChange={(e) =>
-                            changeRole(u._id, u.role || "user", e.target.value)
+                            changeRole(
+                              u._id,
+                              u.role || "user",
+                              e.target.value
+                            )
                           }
                           disabled={actionLoadingId === u._id}
-                          className="select select-sm select-bordered w-fit"
+                          className="select select-sm select-bordered"
                         >
                           <option value="user">User</option>
                           <option value="creator">Creator</option>
@@ -233,31 +214,23 @@ export default function AdminManageUsers() {
             </table>
           </div>
 
-          {/* MOBILE CARDS */}
+          {/* MOBILE VIEW */}
           <div className="md:hidden space-y-4">
-            {users.map((u, idx) => (
-              <div
-                key={u._id}
-                className="p-4 bg-white dark:bg-gray-800 rounded shadow-sm border"
-              >
+            {users.map((u) => (
+              <div key={u._id} className="p-4 bg-white rounded shadow">
                 <div className="flex items-center gap-3">
                   <img
                     src={u.image || "/placeholder.png"}
-                    alt={u.name || u.email}
-                    className="w-12 h-12 rounded-full object-cover"
-                    onError={(e) => (e.currentTarget.src = "/placeholder.png")}
+                    alt={u.email}
+                    className="w-12 h-12 rounded-full"
                   />
-                  <div className="flex-1">
+                  <div>
                     <div className="font-medium">{u.name || "—"}</div>
-                    <div className="text-xs text-gray-500">{u.email}</div>
-                    <div className="text-xs text-gray-500">
-                      {u.address || ""}
-                    </div>
+                    <div className="text-xs">{u.email}</div>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-2">
-                  <span className="text-sm">Role:</span>
+                <div className="mt-3 flex gap-2">
                   <select
                     value={u.role || "user"}
                     onChange={(e) =>

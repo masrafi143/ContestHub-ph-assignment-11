@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink } from "react-router";
 import { FaMoon, FaSun } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
+import useRole from "../hooks/useRole";
 
 const Navbar = () => {
   const { user, dbUser, logOut, dark, setDark } = useAuth();
@@ -18,7 +19,8 @@ const Navbar = () => {
 
   const handleToggleMode = () => setDark(!dark);
   const handleLogout = () => logOut().catch((err) => console.log(err));
-
+  const {role} = useRole();
+  console.log(role)
   const links = (
     <>
       <li><NavLink to="/">Home</NavLink></li>
@@ -26,12 +28,22 @@ const Navbar = () => {
       <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
       <li><NavLink to="/about">About</NavLink></li>
       <li><NavLink to="/how-it-works">How it works</NavLink></li>
-      <li><NavLink to="/add-contest">Add Contest</NavLink></li>
-      <li><NavLink to="/my-contests">My Contest</NavLink></li>
+      {/* {
+        role === 'admin' && <>
       <li><NavLink to="/manage-contests">Manage Contest</NavLink></li>
       <li><NavLink to="/manage-users">Manage Users</NavLink></li>
-      <li><NavLink to="/creator">Contest Creator</NavLink></li>
       <li><NavLink to="/approve-creators">Approve Creators</NavLink></li>
+      </>
+      }
+      {
+        role === 'creator' && <>
+      <li><NavLink to="/my-contests">My Contest</NavLink></li>
+      <li><NavLink to="/add-contest">Add Contest</NavLink></li>
+      <li><NavLink to="/creator">Contest Creator</NavLink></li>
+      </>
+      } */}
+
+
     </>
   );
 

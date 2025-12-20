@@ -8,13 +8,13 @@ const axiosSecure = axios.create({
 });
 
 const useAxiosSecure = () => {
-  const { user, logOut } = useAuth();
+  const { dbUser, logOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     // intercept request
     const reqInterceptor = axiosSecure.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${user?.accessToken}`;
+      config.headers.Authorization = `Bearer ${dbUser?.accessToken}`;
       return config;
     });
 
@@ -41,7 +41,7 @@ const useAxiosSecure = () => {
       axiosSecure.interceptors.request.eject(reqInterceptor);
       axiosSecure.interceptors.response.eject(resInterceptor);
     };
-  }, [user, logOut, navigate]);
+  }, [dbUser, logOut, navigate]);
 
   return axiosSecure;
 };
