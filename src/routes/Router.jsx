@@ -26,6 +26,7 @@ import CreatorRoute from "./CreatorRoute";
 import ApplyCreator from "../pages/ContestCreator/ApplyCreator";
 import ManageContests from "../pages/Contest/AdminManageContests/ManageContests";
 import MyProfile from "../pages/MyProfile/MyProfile";
+import SubmittedTasks from "../pages/SubmittedTasks/SubmittedTasks";
 
 export const router = createBrowserRouter([
   {
@@ -109,6 +110,15 @@ export const router = createBrowserRouter([
         element: (
           <CreatorRoute>
             <AddContest />
+          </CreatorRoute>
+        ),
+      },
+      {
+        path: "submitted-tasks",
+        // Component: AddContest,
+        element: (
+          <CreatorRoute>
+            <SubmittedTasks />
           </CreatorRoute>
         ),
       },

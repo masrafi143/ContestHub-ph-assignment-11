@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://contest-hub-server-gold.vercel.app";
 
 const Winner = () => {
   const { dark } = useAuth();

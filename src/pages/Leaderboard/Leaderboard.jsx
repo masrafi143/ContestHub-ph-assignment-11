@@ -16,7 +16,7 @@ const Leaderboard = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:3000/leaderboard?page=${page}&limit=${ITEMS_PER_PAGE}`
+        `https://contest-hub-server-gold.vercel.app/leaderboard?page=${page}&limit=${ITEMS_PER_PAGE}`
       );
       setLeaders(res.data.data);
       setCurrentPage(res.data.currentPage);

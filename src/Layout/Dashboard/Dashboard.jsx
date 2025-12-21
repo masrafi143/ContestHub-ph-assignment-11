@@ -15,7 +15,9 @@ const Dashboard = () => {
   const { dbUser, dark } = useAuth();
   const { role } = useRole();
 
-  const baseBg = dark ? "bg-[#0b132b] text-gray-100" : "bg-base-100 text-gray-900";
+  const baseBg = dark
+    ? "bg-[#0b132b] text-gray-100"
+    : "bg-base-100 text-gray-900";
   const sidebarBg = dark ? "bg-[#111c44]" : "bg-base-200";
   const hoverBg = dark ? "hover:bg-[#1e2a5a]" : "hover:bg-base-300";
 
@@ -70,9 +72,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div>
-              <p className="text-sm font-semibold">
-                {dbUser?.name || "User"}
-              </p>
+              <p className="text-sm font-semibold">{dbUser?.name || "User"}</p>
               <p className="text-xs opacity-60 capitalize">
                 {role || "member"}
               </p>
@@ -139,6 +139,20 @@ const Dashboard = () => {
                   >
                     <CiCirclePlus className="text-xl" />
                     Add Contest
+                  </NavLink>
+                </li>
+                {/* Submitted Tasks Route */}
+                <li>
+                  <NavLink
+                    to="/dashboard/submitted-tasks"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+           ${isActive ? activeClass : ""}
+           ${hoverBg}`
+                    }
+                  >
+                    <RiTeamLine className="text-xl" />
+                    Submitted Tasks
                   </NavLink>
                 </li>
               </>

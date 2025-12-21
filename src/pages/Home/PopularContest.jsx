@@ -11,7 +11,7 @@ const PopularContest = () => {
   useEffect(() => {
     const fetchPopular = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/contests");
+        const res = await axios.get("https://contest-hub-server-gold.vercel.app/contests");
         if (!Array.isArray(res.data)) return;
 
         // Ensure popular === "yes" (case-insensitive)
