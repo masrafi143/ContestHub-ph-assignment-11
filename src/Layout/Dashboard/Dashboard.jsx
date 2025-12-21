@@ -85,6 +85,25 @@ const Dashboard = () => {
                   </button>
                 </NavLink>
               </li>
+              
+              <li
+                className="tooltip tooltip-right before:z-50"
+                data-tip="Profile"
+              >
+                <NavLink
+                  to="/dashboard/profile"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-primary text-primary-content rounded-3xl"
+                      : ""
+                  }
+                >
+                  <button className="w-full flex items-center justify-center lg:justify-start gap-4">
+                    <CgProfile className="text-3xl" />
+                    <span className="is-drawer-close:hidden">Profile</span>
+                  </button>
+                </NavLink>
+              </li>
 
               {/* Creator-routes */}
               {role === "creator" && (
@@ -154,24 +173,7 @@ const Dashboard = () => {
                 </>
               )}
 
-              <li
-                className="tooltip tooltip-right before:z-50"
-                data-tip="Profile"
-              >
-                <NavLink
-                  to="/dashboard/profile"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-primary text-primary-content rounded-3xl"
-                      : ""
-                  }
-                >
-                  <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                    <CgProfile className="text-3xl" />
-                    <span className="is-drawer-close:hidden">Profile</span>
-                  </button>
-                </NavLink>
-              </li>
+
 
               {/* Admin Only Links */}
               {role === "admin" && (

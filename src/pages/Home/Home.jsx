@@ -1,9 +1,14 @@
 import React from 'react';
+import Banner from './Banner';
+import PopularContest from './PopularContest';
+import Winner from './Winner';
 
 const Home = () => {
     return (
-        <div className='min-h-screen'>
-            <h2>home</h2>
+        <div>
+            <Banner/>
+            <PopularContest/>
+            <Winner/>
         </div>
     );
 };

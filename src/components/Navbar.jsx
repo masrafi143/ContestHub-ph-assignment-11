@@ -97,8 +97,11 @@ const Navbar = () => {
               <ul tabIndex={0} className={`dropdown-content menu rounded-box w-56 p-2 shadow mt-2 ${dark ? "bg-gray-800 text-white" : "bg-base-100 text-gray-900"}`}>
                 <li className="text-center font-bold text-lg">{displayName}</li>
                 <li className="text-center text-sm text-primary">{displayEmail}</li>
-                <li className="mt-2">
-                  <button onClick={handleLogout} className="btn bg-primary text-white w-full rounded-full">
+                <li className="mt-2 space-y-2">
+                  <Link to='/dashboard' className="btn btn-primary text-white w-full rounded-[20px]">
+                    Dashboard
+                  </Link>
+                  <button onClick={handleLogout} className="btn btn-primary text-white w-full rounded-[20px]">
                     Logout
                   </button>
                 </li>
