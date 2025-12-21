@@ -21,7 +21,7 @@ const MyCreatedContests = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:3000/contests?email=${userEmail}`
+          `https://contest-hub-server-gold.vercel.app/contests?email=${userEmail}`
         );
         if (!res.ok) throw new Error("Failed to fetch contests");
         const data = await res.json();
@@ -44,7 +44,7 @@ const MyCreatedContests = () => {
     if (!confirm) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/contests/${id}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/contests/${id}`, {
         method: "DELETE",
       });
       const result = await res.json();

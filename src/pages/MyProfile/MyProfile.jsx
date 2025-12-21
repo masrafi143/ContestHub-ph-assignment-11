@@ -34,7 +34,7 @@ const MyProfile = () => {
     try {
       await updateUserProfile({ displayName: name, photoURL });
       const res = await fetch(
-        `http://localhost:3000/users/${dbUser?._id || user?.email}`,
+        `https://contest-hub-server-gold.vercel.app/users/${dbUser?._id || user?.email}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

@@ -18,7 +18,7 @@ const EditContest = () => {
   useEffect(() => {
     const fetchContest = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/contests/${id}`);
+        const res = await fetch(`https://contest-hub-server-gold.vercel.app/contests/${id}`);
         if (!res.ok) throw new Error("Failed to fetch contest");
         const data = await res.json();
 
@@ -57,7 +57,7 @@ const EditContest = () => {
 
     try {
       setSubmitting(true);
-      const res = await fetch(`http://localhost:3000/contests/${id}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/contests/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),

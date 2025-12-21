@@ -21,7 +21,19 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [dark, setDark] = useState(false);
+
+  // Dark mode with localStorage
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved === "true"; // convert string to boolean
+  });
+
+  const toggleDark = () => {
+    setDark(prev => {
+      localStorage.setItem("darkMode", !prev); // save to localStorage
+      return !prev;
+    });
+  };
 
   const createUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
   const signInUser = (email, password) => signInWithEmailAndPassword(auth, email, password);
@@ -36,17 +48,15 @@ const AuthProvider = ({ children }) => {
   };
   const forgotPassword = (email) => sendPasswordResetEmail(auth, email);
 
-  // Update Firebase profile
   const updateUserProfile = (profile) => {
     if (user) return updateProfile(user, profile);
     return Promise.reject("No user logged in");
   };
 
-  // Fetch MongoDB user info by email
   const fetchDbUser = async (email) => {
     if (!email) return;
     try {
-      const res = await fetch(`http://localhost:3000/users?email=${email}`);
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/users?email=${email}`);
       const data = await res.json();
       if (data.length > 0) setDbUser(data[0]);
     } catch (err) {
@@ -80,7 +90,7 @@ const AuthProvider = ({ children }) => {
     forgotPassword,
     updateUserProfile,
     dark,
-    setDark,
+    setDark: toggleDark, // use toggle function for components
     fetchDbUser
   };
 

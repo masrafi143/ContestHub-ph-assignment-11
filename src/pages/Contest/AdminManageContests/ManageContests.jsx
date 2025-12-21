@@ -25,7 +25,7 @@ export default function ManageContests() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:3000/contests");
+      const res = await fetch("https://contest-hub-server-gold.vercel.app/contests");
       if (!res.ok) throw new Error("Failed to load contests");
       const data = await res.json();
       setContests(Array.isArray(data) ? data : []);
@@ -58,7 +58,7 @@ export default function ManageContests() {
 
     try {
       setActionLoadingId(id);
-      const res = await fetch(`http://localhost:3000/contest-status/${id}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/contest-status/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -94,7 +94,7 @@ export default function ManageContests() {
 
     try {
       setActionLoadingId(id);
-      const res = await fetch(`http://localhost:3000/contests/${id}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/contests/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

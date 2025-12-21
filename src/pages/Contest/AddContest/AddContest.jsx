@@ -35,6 +35,7 @@ const AddContest = () => {
       email: userEmail,
       participantsCount: 0,
       status: "pending",
+      popular: "yes",
     };
 
     try {

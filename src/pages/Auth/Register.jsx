@@ -3,18 +3,22 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../provider/AuthProvider";
 import SocialLogin from "./SocialLogin";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaMoon, FaSun } from "react-icons/fa";
 import { toast } from "react-toastify";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Register = () => {
-  const { createUser, updateUserProfile } = useContext(AuthContext);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { createUser, updateUserProfile, dark, setDark } =
+    useContext(AuthContext);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const location = useLocation();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const axiosSecure = useAxiosSecure();
-
 
   const togglePassword = (e) => {
     e.preventDefault();
@@ -23,27 +27,32 @@ const Register = () => {
 
   const handleRegister = async (data) => {
     const { name, email, password, photoURL } = data;
-    console.log(data)
 
     try {
-      // 1️⃣ Create user in Firebase
-      const result = await createUser(email, password);
+      await createUser(email, password);
 
-      // 2️⃣ Update Firebase profile
-      await updateUserProfile({ displayName: name, photoURL: photoURL || "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n" });
+      await updateUserProfile({
+        displayName: name,
+        photoURL:
+          photoURL ||
+          "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
+      });
 
-      // 3️⃣ Save user info in DB
       const userData = {
         name,
         email,
-        image: photoURL || "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
+        image:
+          photoURL ||
+          "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
       };
 
-      // Check if user already exists in DB
-      const resCheck = await fetch(`http://localhost:3000/users?email=${email}`);
-      const existingUsers = await resCheck.json();
-      if (existingUsers.length === 0) {
-        await fetch("http://localhost:3000/users", {
+      const res = await fetch(
+        `https://contest-hub-server-gold.vercel.app/users?email=${email}`
+      );
+      const exists = await res.json();
+
+      if (exists.length === 0) {
+        await fetch("https://contest-hub-server-gold.vercel.app/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData),
@@ -53,92 +62,153 @@ const Register = () => {
       toast.success("Registration successful!");
       navigate(location?.state || "/");
     } catch (error) {
-      console.error("Registration error:", error);
-      toast.error("Registration failed. Try again!");
+      console.error(error);
+      toast.error("Registration failed!");
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-base-200 px-4">
-      <div className="w-full max-w-md bg-base-100 shadow-xl rounded-2xl p-8 border border-base-300">
+    <div
+      className={`min-h-screen flex items-center justify-center px-4 transition-colors duration-300
+      ${
+        dark
+          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+          : "bg-gradient-to-br from-indigo-50 via-white to-blue-100"
+      }`}
+    >
+      {/* Theme Toggle */}
+      <button
+        onClick={() => setDark(!dark)}
+        className="absolute top-6 right-6 p-3 rounded-full backdrop-blur-md shadow-lg
+        bg-white/70 dark:bg-gray-800/70 text-gray-800 dark:text-white"
+      >
+        {dark ? <FaSun /> : <FaMoon />}
+      </button>
 
-        <h2 className="text-3xl font-bold text-center mb-6 text-primary">
-          Register for ContestHub
+      <div
+        className={`w-full max-w-md rounded-2xl p-8 backdrop-blur-xl transition-all duration-300
+        ${
+          dark
+            ? "bg-gray-900/70 text-white shadow-2xl shadow-black/40"
+            : "bg-white/80 text-gray-900 shadow-xl"
+        }`}
+      >
+        <h2 className="text-3xl font-extrabold text-center mb-2">
+          Create Account
         </h2>
+        <p className="text-center text-sm opacity-80 mb-6">
+          Join ContestHub and start competing
+        </p>
 
-        <form onSubmit={handleSubmit(handleRegister)} className="space-y-3">
-          <fieldset className="fieldset space-y-2">
-
-            {/* Name */}
-            <label className="label font-medium">Full Name</label>
+        <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
+          {/* Name */}
+          <div>
+            <label className="text-sm font-medium">Full Name</label>
             <input
               type="text"
-              placeholder="Your Name"
-              className="input input-bordered w-full"
+              placeholder="Your name"
+              className={`input w-full mt-1 focus:ring-2
+              ${
+                dark
+                  ? "bg-gray-800 text-white focus:ring-indigo-500"
+                  : "bg-gray-100 text-gray-900 focus:ring-indigo-400"
+              }`}
               {...register("name", { required: "Name is required" })}
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
 
-            {/* Email */}
-            <label className="label font-medium">Email</label>
+          {/* Email */}
+          <div>
+            <label className="text-sm font-medium">Email</label>
             <input
               type="email"
-              placeholder="Email"
-              className="input input-bordered w-full"
+              placeholder="you@example.com"
+              className={`input w-full mt-1 focus:ring-2
+              ${
+                dark
+                  ? "bg-gray-800 text-white focus:ring-indigo-500"
+                  : "bg-gray-100 text-gray-900 focus:ring-indigo-400"
+              }`}
               {...register("email", { required: "Email is required" })}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
+          </div>
 
-            {/* Password */}
-            <label className="label font-medium">Password</label>
+          {/* Password */}
+          <div>
+            <label className="text-sm font-medium">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="input input-bordered w-full"
-                {...register("password", { 
-                  required: "Password is required", 
-                  minLength: { value: 6, message: "Password must be at least 6 characters" } 
+                placeholder="••••••••"
+                className={`input w-full mt-1 pr-12 focus:ring-2
+                ${
+                  dark
+                    ? "bg-gray-800 text-white focus:ring-indigo-500"
+                    : "bg-gray-100 text-gray-900 focus:ring-indigo-400"
+                }`}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Minimum 6 characters",
+                  },
                 })}
               />
-              <button 
-                onClick={togglePassword} 
-                className="btn btn-xs absolute top-2 right-4 md:right-6 z-50"
+              <button
+                onClick={togglePassword}
+                className="absolute top-3 right-4 opacity-70 hover:opacity-100"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-            {/* Photo URL */}
-            <label className="label font-medium">Profile Photo URL</label>
+          {/* Photo URL */}
+          <div>
+            <label className="text-sm font-medium">
+              Profile Photo URL (optional)
+            </label>
             <input
               type="text"
-              placeholder="Photo URL (optional)"
-              className="input input-bordered w-full"
+              placeholder="https://image..."
+              className={`input w-full mt-1
+              ${
+                dark
+                  ? "bg-gray-800 text-white"
+                  : "bg-gray-100 text-gray-900"
+              }`}
               {...register("photoURL")}
             />
+          </div>
 
-            {/* Submit Button */}
-            <button className="btn btn-primary w-full mt-2">Register</button>
-          </fieldset>
-
-          {/* Login Link */}
-          <p className="text-center mt-3 text-sm">
-            Already have an account?{" "}
-            <Link
-              state={location.state}
-              to="/login"
-              className="text-primary font-medium underline"
-            >
-              Login
-            </Link>
-          </p>
+          <button
+            className="w-full py-3 rounded-xl font-semibold transition-all
+            bg-gradient-to-r from-indigo-500 to-purple-600
+            hover:from-indigo-600 hover:to-purple-700 text-white"
+          >
+            Register
+          </button>
         </form>
 
-        <div className="mt-6">
-          <SocialLogin />
-        </div>
+        <SocialLogin />
+
+        <p className="text-center mt-6 text-sm">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-500 font-semibold">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

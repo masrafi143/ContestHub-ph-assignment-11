@@ -42,7 +42,7 @@ export default function AdminManageUsers() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("http://localhost:3000/users");
+      const res = await fetch("https://contest-hub-server-gold.vercel.app/users");
       if (!res.ok) throw new Error("Failed to load users");
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
@@ -77,7 +77,7 @@ export default function AdminManageUsers() {
 
     try {
       setActionLoadingId(userId);
-      const res = await fetch(`http://localhost:3000/users-role/${userId}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/users-role/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: newRole }),
@@ -113,7 +113,7 @@ export default function AdminManageUsers() {
 
     try {
       setActionLoadingId(userId);
-      const res = await fetch(`http://localhost:3000/users/${userId}`, {
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/users/${userId}`, {
         method: "DELETE",
       });
       const result = await res.json();

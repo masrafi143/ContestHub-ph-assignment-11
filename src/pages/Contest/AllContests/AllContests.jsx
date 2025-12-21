@@ -20,7 +20,7 @@ const AllContests = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch("http://localhost:3000/approved-contests");
+        const res = await fetch("https://contest-hub-server-gold.vercel.app/approved-contests");
         if (!res.ok) throw new Error("Failed to load contests");
         const data = await res.json();
         if (mounted) setContests(Array.isArray(data) ? data : []);
