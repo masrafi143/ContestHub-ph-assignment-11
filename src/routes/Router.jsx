@@ -52,7 +52,6 @@ export const router = createBrowserRouter([
         path: "how-it-works",
         Component: HowItWorks,
       },
-
       {
         path: "all-contests",
         Component: AllContests,
@@ -72,11 +71,6 @@ export const router = createBrowserRouter([
       {
         path: "leaderboard",
         Component: Leaderboard,
-      },
-
-      {
-        path: "user-management",
-        Component: UsersManagement,
       },
     ],
   },

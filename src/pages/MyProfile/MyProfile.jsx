@@ -3,16 +3,23 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../../provider/AuthProvider";
 
 const MyProfile = () => {
-  const { user, dbUser, updateUserProfile, fetchDbUser, loading } = useContext(AuthContext);
+  const { user, dbUser, updateUserProfile, fetchDbUser, loading, dark } =
+    useContext(AuthContext);
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(dbUser?.name || user?.displayName || "");
-  const [photoURL, setPhotoURL] = useState(dbUser?.image || user?.photoURL || "");
+  const [photoURL, setPhotoURL] = useState(
+    dbUser?.image || user?.photoURL || ""
+  );
   const [updating, setUpdating] = useState(false);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div
+        className={`flex justify-center items-center min-h-screen ${
+          dark ? "bg-[#0b132b]" : "bg-white"
+        }`}
+      >
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
@@ -20,16 +27,20 @@ const MyProfile = () => {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return Swal.fire("Error", "Name cannot be empty", "error");
+    if (!name.trim())
+      return Swal.fire("Error", "Name cannot be empty", "error");
 
     setUpdating(true);
     try {
       await updateUserProfile({ displayName: name, photoURL });
-      const res = await fetch(`http://localhost:3000/users/${dbUser?._id || user?.email}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, image: photoURL }),
-      });
+      const res = await fetch(
+        `http://localhost:3000/users/${dbUser?._id || user?.email}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, image: photoURL }),
+        }
+      );
       if (!res.ok) throw new Error("DB update failed");
       await fetchDbUser(user?.email);
       setIsEditing(false);
@@ -42,84 +53,146 @@ const MyProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+    <div
+      className={`min-h-screen relative overflow-hidden ${
+        dark ? "bg-[#0b132b] text-gray-100" : "bg-white text-gray-900"
+      }`}
+    >
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/20 via-purple-500/20 to-cyan-500/20 animate-pulse"></div>
+      <div
+        className={`absolute inset-0 ${
+          dark
+            ? "bg-[#111c44]/50 animate-pulse"
+            : "bg-white/0 animate-pulse"
+        }`}
+      ></div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen p-6">
         <div className="w-full max-w-2xl">
-          {/* Main Glass Card */}
-          <div className="backdrop-blur-xl bg-white/10 rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12">
-            {/* Avatar with Neon Glow */}
+          {/* Main Card */}
+          <div
+            className={`backdrop-blur-xl rounded-3xl shadow-2xl border p-8 md:p-12 ${
+              dark
+                ? "bg-[#111c44]/80 border-[#0b132b]"
+                : "bg-white border-gray-200"
+            }`}
+          >
+            {/* Avatar */}
             <div className="flex flex-col items-center -mt-20 md:-mt-24">
               <div className="relative">
                 <div className="avatar">
-                  <div className="w-32 md:w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-8 ring-offset-transparent shadow-2xl">
+                  <div
+                    className={`w-32 md:w-40 rounded-full ring ring-primary ring-offset-2 shadow-2xl ${
+                      dark ? "ring-offset-[#0b132b]" : "ring-offset-white"
+                    }`}
+                  >
                     <img
-                      src={dbUser?.image || user?.photoURL || "https://i.ibb.co.com/5Yc6f8d/avatar-placeholder.png"}
+                      src={
+                        dbUser?.image ||
+                        user?.photoURL ||
+                        "https://i.ibb.co/5Yc6f8d/avatar-placeholder.png"
+                      }
                       alt="Profile"
                       className="object-cover"
                     />
                   </div>
                 </div>
-                <div className="absolute inset-0 rounded-full bg-primary/30 blur-xl animate-pulse"></div>
+                <div
+                  className={`absolute inset-0 rounded-full ${
+                    dark
+                      ? "bg-primary/20 blur-xl animate-pulse"
+                      : "bg-cyan-200/20 blur-xl animate-pulse"
+                  }`}
+                ></div>
               </div>
 
-              <h1 className="mt-6 text-3xl md:text-4xl font-bold text-white">
+              <h1
+                className={`mt-6 text-3xl md:text-4xl font-bold ${
+                  dark ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
                 {dbUser?.name || user?.displayName}
               </h1>
+              <p className={`${dark ? "text-gray-300" : "text-gray-600"} text-lg mt-2`}>
+                {user?.email}
+              </p>
 
-              <p className="text-white/70 text-lg mt-2">{user?.email}</p>
-
-              {/* Role Badge with Glow */}
+              {/* Role Badge */}
               <div className="mt-4">
-                <span className="px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-semibold shadow-lg shadow-purple-500/50 capitalize">
+                <span
+                  className={`px-6 py-2 rounded-full font-semibold shadow-lg capitalize ${
+                    dark ? "bg-[#0b132b] text-gray-100" : "bg-gray-200 text-gray-900"
+                  }`}
+                >
                   {dbUser?.role || "user"}
                 </span>
               </div>
 
-              {/* Edit Button with Neon Effect */}
               <button
                 onClick={() => setIsEditing(true)}
-                className="mt-8 px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold rounded-full shadow-lg hover:shadow-cyan-500/50 transition duration-300 hover:scale-105"
+                className={`mt-8 px-8 py-3 font-bold rounded-full shadow-lg transition duration-300 hover:scale-105 ${
+                  dark
+                    ? "bg-[#0b132b] text-gray-100 hover:bg-[#111c44]"
+                    : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                }`}
               >
                 Edit Profile
               </button>
             </div>
           </div>
 
-          {/* Edit Form (Floating Glass Panel) */}
+          {/* Edit Form */}
           {isEditing && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-              <div className="w-full max-w-lg backdrop-blur-2xl bg-white/10 rounded-3xl shadow-2xl border border-white/20 p-8 animate-in fade-in zoom-in duration-300">
-                <h2 className="text-2xl font-bold text-white mb-6 text-center">Update Profile</h2>
+              <div
+                className={`w-full max-w-lg rounded-3xl shadow-2xl border p-8 animate-in fade-in zoom-in duration-300 ${
+                  dark
+                    ? "bg-[#111c44]/90 border-[#0b132b] text-gray-100"
+                    : "bg-white border-gray-200 text-gray-900"
+                }`}
+              >
+                <h2 className="text-2xl font-bold mb-6 text-center">
+                  Update Profile
+                </h2>
 
                 <form onSubmit={handleUpdateProfile} className="space-y-6">
                   <div>
-                    <label className="block text-white/80 mb-2">Name</label>
+                    <label className="block mb-2">Name</label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+                        dark
+                          ? "bg-[#0b132b] border-[#111c44] text-gray-100 focus:ring-cyan-500"
+                          : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-cyan-500"
+                      }`}
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white/80 mb-2">Photo URL</label>
+                    <label className="block mb-2">Photo URL</label>
                     <input
                       type="url"
                       value={photoURL}
                       onChange={(e) => setPhotoURL(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                       placeholder="https://..."
+                      className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+                        dark
+                          ? "bg-[#0b132b] border-[#111c44] text-gray-100 focus:ring-cyan-500"
+                          : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-cyan-500"
+                      }`}
                     />
                   </div>
 
                   {photoURL && (
                     <div className="flex justify-center">
-                      <img src={photoURL} alt="Preview" className="w-24 h-24 rounded-full ring-4 ring-cyan-500/50" />
+                      <img
+                        src={photoURL}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full ring-4 ring-cyan-500/50"
+                      />
                     </div>
                   )}
 
@@ -127,14 +200,22 @@ const MyProfile = () => {
                     <button
                       type="button"
                       onClick={() => setIsEditing(false)}
-                      className="px-6 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition"
+                      className={`px-6 py-3 rounded-xl transition ${
+                        dark
+                          ? "bg-[#0b132b] text-gray-100 hover:bg-[#111c44]"
+                          : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      }`}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={updating}
-                      className="px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold shadow-lg hover:shadow-cyan-500/50 transition hover:scale-105"
+                      className={`px-8 py-3 rounded-xl font-bold shadow-lg transition hover:scale-105 ${
+                        dark
+                          ? "bg-[#0b132b] text-gray-100 hover:bg-[#111c44]"
+                          : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      }`}
                     >
                       {updating ? "Saving..." : "Save Changes"}
                     </button>

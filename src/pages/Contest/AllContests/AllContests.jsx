@@ -1,11 +1,9 @@
-// src/pages/AllContests.jsx
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { AuthContext } from "../../../provider/AuthProvider";
-// adjust path if your provider lives elsewhere
 
 const AllContests = () => {
-  const { user } = useContext(AuthContext);
+  const { user, dark } = useContext(AuthContext); // get dark mode flag
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -71,14 +69,21 @@ const AllContests = () => {
     }
     navigate(`/contests/${contestId}`);
   };
-  console.log(contests[0]?.price);
+
+  // Theme classes
+  const bgClass = dark ? "bg-[#0b132b]" : "bg-white";
+  const textClass = dark ? "text-gray-200" : "text-gray-800";
+  const subTextClass = dark ? "text-gray-400" : "text-gray-600";
+  const cardBgClass = dark ? "bg-[#1a1f3d]" : "bg-white";
+  const cardTextClass = dark ? "text-gray-200" : "text-gray-800";
+  const cardSubTextClass = dark ? "text-gray-400" : "text-gray-600";
 
   return (
-    <div className="min-h-screen w-11/12 mx-auto py-10">
+    <div className={`min-h-screen w-11/12 mx-auto py-10 transition-colors ${bgClass} ${textClass}`}>
       {/* Header / Search */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">All Contests</h1>
-        <p className="text-gray-600 mb-4">
+        <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${textClass}`}>All Contests</h1>
+        <p className={`${subTextClass} mb-4`}>
           Explore admin-approved contests and join the creative community.
         </p>
 
@@ -87,7 +92,7 @@ const AllContests = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search contests by name, type, or description..."
-            className="input input-bordered flex-1"
+            className={`input input-bordered flex-1 ${dark ? "bg-[#1a1f3d] text-gray-200 border-gray-700" : ""}`}
           />
         </div>
       </div>
@@ -102,8 +107,8 @@ const AllContests = () => {
               className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
                 activeType === t
                   ? "bg-primary text-white"
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-              }`}
+                  : `${dark ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-800"}`
+              } transition-colors`}
             >
               {t}
             </button>
@@ -113,11 +118,11 @@ const AllContests = () => {
 
       {/* Content */}
       {loading ? (
-        <div className="text-center py-20">Loading contests...</div>
+        <div className={`text-center py-20 ${subTextClass}`}>Loading contests...</div>
       ) : error ? (
-        <div className="text-center py-20 text-red-600">Error: {error}</div>
+        <div className="text-center py-20 text-red-500">Error: {error}</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20 text-gray-600">
+        <div className={`text-center py-20 ${subTextClass}`}>
           No contests found for the selected filters.
         </div>
       ) : (
@@ -125,7 +130,7 @@ const AllContests = () => {
           {filtered.map((c) => (
             <article
               key={c._id}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden flex flex-col"
+              className={`rounded-xl shadow-md overflow-hidden flex flex-col transition-colors ${cardBgClass} ${cardTextClass}`}
             >
               {/* image */}
               <div className="h-48 w-full overflow-hidden bg-gray-100">
@@ -136,23 +141,19 @@ const AllContests = () => {
                   }
                   alt={c.name}
                   className="w-full h-full object-cover"
-                  onError={(e) =>
-                    (e.currentTarget.src =
-                      "https://imgs.search.brave.com/ETUn1PC-pMpT1fq_3em0f7OzFpBtCoJZAUnuQnsg-Xg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/eHMuY29tL2ltZy9j/b250ZXN0L2RlbW8t/Y29udGVzdC9waGQw/MDAzL2NvbnRlc3Qt/cGhkMDAwMy1ib3g/d2VicA")
-                  }
                 />
               </div>
 
               {/* content */}
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="text-lg font-semibold mb-2">{c.name}</h3>
+                <h3 className={`text-lg font-semibold mb-2 ${cardTextClass}`}>{c.name}</h3>
 
-                <div className="text-xs text-gray-500 mb-2">
+                <div className={`text-xs mb-2 ${cardSubTextClass}`}>
                   <span className="mr-3">Type: {c.type || "—"}</span>
                   <span>Participants: {c.participantsCount ?? 0}</span>
                 </div>
 
-                <p className="text-sm text-gray-600 flex-1">
+                <p className={`text-sm flex-1 ${cardSubTextClass}`}>
                   {c.description
                     ? c.description.length > 120
                       ? c.description.slice(0, 120) + "..."
@@ -160,14 +161,10 @@ const AllContests = () => {
                     : "No description."}
                 </p>
 
-                    <div className="text-red-500">
-                      Price: {c.price ? `${c.price}` : "—"}
-                    </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-xs text-gray-500">
-                    Prize: {c.prize ? `${c.prize}` : "—"}
-                  </div>
+                <div className="text-red-400 mt-2">Price: {c.price ? `${c.price}` : "—"}</div>
 
+                <div className="mt-4 flex items-center justify-between">
+                  <div className={`text-xs ${cardSubTextClass}`}>Prize: {c.prize ? `${c.prize}` : "—"}</div>
                   <button
                     onClick={() => handleDetails(c._id)}
                     className="btn btn-sm btn-primary"

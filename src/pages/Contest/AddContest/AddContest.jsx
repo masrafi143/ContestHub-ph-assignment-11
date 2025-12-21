@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AuthContext } from "../../../provider/AuthProvider"; // update path if needed
 
 const AddContest = () => {
-  const { user } = useContext(AuthContext); // get current user
+  const { user, dark } = useContext(AuthContext); // dark mode flag
   const userEmail = user?.email;
 
   const {
@@ -32,9 +32,9 @@ const AddContest = () => {
       ...data,
       deadline: deadline instanceof Date ? deadline.toISOString() : deadline,
       createdAt: new Date().toISOString(),
-      email: userEmail, // store user email in DB
+      email: userEmail,
       participantsCount: 0,
-      status: "pending", // default status
+      status: "pending",
     };
 
     try {
@@ -64,14 +64,26 @@ const AddContest = () => {
   };
 
   return (
-    <div className="min-h-screen w-11/12 mx-auto py-10 bg-white dark:bg-gray-900 dark:text-white transition">
-      <h1 className="text-3xl md:text-5xl font-bold text-center text-primary mb-8">
+    <div
+      className={`min-h-screen w-11/12 mx-auto py-10 transition-colors ${
+        dark ? "bg-[#0b132b] text-gray-100" : "bg-white text-gray-900"
+      }`}
+    >
+      <h1
+        className={`text-3xl md:text-5xl font-bold text-center mb-8 ${
+          dark ? "text-cyan-400" : "text-primary"
+        }`}
+      >
         Create New Contest
       </h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-3xl mx-auto p-6 rounded-xl shadow-lg bg-base-200 dark:bg-gray-800 border border-base-300 dark:border-gray-700"
+        className={`max-w-3xl mx-auto p-6 rounded-xl shadow-lg border transition-colors ${
+          dark
+            ? "bg-[#111c44] border-[#0b132b]"
+            : "bg-base-200 border-base-300"
+        }`}
       >
         {/* Contest Name */}
         <div className="mb-5">
@@ -79,10 +91,14 @@ const AddContest = () => {
           <input
             type="text"
             {...register("name", { required: true })}
-            className="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`input input-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="Enter contest name"
           />
-          {errors.name && <p className="text-red-500 text-sm">Name is required</p>}
+          {errors.name && (
+            <p className="text-red-500 text-sm">Name is required</p>
+          )}
         </div>
 
         {/* Image URL */}
@@ -91,10 +107,14 @@ const AddContest = () => {
           <input
             type="text"
             {...register("image", { required: true })}
-            className="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`input input-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="Enter image URL"
           />
-          {errors.image && <p className="text-red-500 text-sm">Image is required</p>}
+          {errors.image && (
+            <p className="text-red-500 text-sm">Image is required</p>
+          )}
         </div>
 
         {/* Description */}
@@ -102,11 +122,15 @@ const AddContest = () => {
           <label className="block font-semibold mb-2">Description</label>
           <textarea
             {...register("description", { required: true })}
-            className="textarea textarea-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`textarea textarea-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="Write contest description"
             rows={4}
           ></textarea>
-          {errors.description && <p className="text-red-500 text-sm">Description is required</p>}
+          {errors.description && (
+            <p className="text-red-500 text-sm">Description is required</p>
+          )}
         </div>
 
         {/* Entry Fee */}
@@ -115,10 +139,14 @@ const AddContest = () => {
           <input
             type="number"
             {...register("price", { required: true })}
-            className="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`input input-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="Enter entry fee (0 for free)"
           />
-          {errors.price && <p className="text-red-500 text-sm">Price is required</p>}
+          {errors.price && (
+            <p className="text-red-500 text-sm">Price is required</p>
+          )}
         </div>
 
         {/* Prize Money */}
@@ -127,10 +155,14 @@ const AddContest = () => {
           <input
             type="number"
             {...register("prize", { required: true })}
-            className="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`input input-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="Prize amount (e.g., 5000)"
           />
-          {errors.prize && <p className="text-red-500 text-sm">Prize money required</p>}
+          {errors.prize && (
+            <p className="text-red-500 text-sm">Prize money required</p>
+          )}
         </div>
 
         {/* Task Instruction */}
@@ -138,11 +170,15 @@ const AddContest = () => {
           <label className="block font-semibold mb-2">Task Instruction</label>
           <textarea
             {...register("instruction", { required: true })}
-            className="textarea textarea-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`textarea textarea-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
             placeholder="What should participants do?"
             rows={4}
           ></textarea>
-          {errors.instruction && <p className="text-red-500 text-sm">Instruction is required</p>}
+          {errors.instruction && (
+            <p className="text-red-500 text-sm">Instruction is required</p>
+          )}
         </div>
 
         {/* Contest Type */}
@@ -150,7 +186,9 @@ const AddContest = () => {
           <label className="block font-semibold mb-2">Contest Type</label>
           <select
             {...register("type", { required: true })}
-            className="select select-bordered w-full dark:bg-gray-700 dark:border-gray-600"
+            className={`select select-bordered w-full transition-colors ${
+              dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+            }`}
           >
             <option value="">Select contest type</option>
             <option value="Programming Contest">Programming Contest</option>
@@ -161,7 +199,9 @@ const AddContest = () => {
             <option value="Math Olympiad">Math Olympiad</option>
             <option value="Project Showcase">Project Showcase</option>
           </select>
-          {errors.type && <p className="text-red-500 text-sm">Contest type required</p>}
+          {errors.type && (
+            <p className="text-red-500 text-sm">Contest type required</p>
+          )}
         </div>
 
         {/* Deadline */}
@@ -175,18 +215,31 @@ const AddContest = () => {
               minDate={new Date()}
               dateFormat="Pp"
               placeholderText="Select deadline"
-              className="input input-bordered w-full pl-12 py-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white rounded-xl text-base shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`input input-bordered w-full pl-12 py-3 rounded-xl text-base shadow-sm transition-colors ${
+                dark ? "bg-[#0b132b] border-[#111c44] text-gray-100" : ""
+              }`}
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300">
+            <span
+              className={`absolute left-4 top-1/2 -translate-y-1/2 ${
+                dark ? "text-gray-300" : "text-gray-500"
+              }`}
+            >
               📅
             </span>
           </div>
-          {!deadline && <p className="text-red-500 text-sm mt-1">Deadline is required</p>}
+          {!deadline && (
+            <p className="text-red-500 text-sm mt-1">Deadline is required</p>
+          )}
         </div>
 
         {/* Submit */}
         <div className="text-center">
-          <button disabled={loading} className="btn btn-primary w-full md:w-1/2">
+          <button
+            disabled={loading}
+            className={`btn w-full md:w-1/2 transition-colors ${
+              dark ? "btn-primary bg-[#0b132b] text-gray-100 hover:bg-[#111c44]" : ""
+            }`}
+          >
             {loading ? "Creating..." : "Create Contest"}
           </button>
         </div>

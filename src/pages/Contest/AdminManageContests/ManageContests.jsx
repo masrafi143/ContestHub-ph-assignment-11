@@ -1,16 +1,16 @@
 // src/pages/admin/AdminManageContests.jsx
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../../provider/AuthProvider"; // adjust path if needed
+import useAuth from "../../../hooks/useAuth";
 
 export default function ManageContests() {
-  const { dbUser } = useContext(AuthContext); // optional role check
+  const { dbUser, dark } = useAuth();
+
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [error, setError] = useState(null);
 
-  // simple toast helper (top-end)
   const fireToast = (title, icon = "success") => {
     Swal.fire({
       position: "top-end",
@@ -39,13 +39,10 @@ export default function ManageContests() {
   };
 
   useEffect(() => {
-    // Optional: guard for admin role:
-    // if (dbUser?.role !== "admin") return; // or show message
     loadContests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // update status (confirm / reject)
   const updateStatus = async (id, newStatus) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -82,7 +79,6 @@ export default function ManageContests() {
     }
   };
 
-  // delete contest
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -109,7 +105,6 @@ export default function ManageContests() {
           text: "Contest has been deleted.",
           icon: "success",
         });
-        // update UI
         setContests((prev) => prev.filter((c) => c._id !== id));
       } else {
         fireToast(data.message || "Delete failed", "error");
@@ -122,9 +117,15 @@ export default function ManageContests() {
     }
   };
 
+  const tableHeaderBg = dark ? "bg-[#111c44] text-gray-200" : "bg-base-200 text-gray-900";
+  const rowBg = dark ? "bg-[#0b132b] text-gray-100" : "bg-white text-gray-900";
+  const rowHoverBg = dark ? "hover:bg-[#1e2a5a]" : "hover:bg-base-300";
+
   return (
     <div className="w-11/12 mx-auto py-8">
-      <h2 className="text-2xl font-bold mb-4">Manage Contests</h2>
+      <h2 className={`text-2xl font-bold mb-4 ${dark ? "text-gray-100" : "text-gray-900"}`}>
+        Manage Contests
+      </h2>
 
       {dbUser?.role !== "admin" && (
         <div className="mb-4 p-3 rounded bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800">
@@ -140,10 +141,10 @@ export default function ManageContests() {
         <div className="p-6 text-center text-gray-600">No contests found.</div>
       ) : (
         <>
-          {/* TABLE for md and above */}
-          <div className="hidden md:block overflow-x-auto bg-white dark:bg-gray-800 rounded-md shadow-sm">
-            <table className="min-w-full divide-y">
-              <thead className="bg-gray-100 dark:bg-gray-700">
+          {/* Desktop Table */}
+          <div className={`hidden md:block overflow-x-auto rounded-md shadow-sm border ${dark ? "border-gray-700" : "border-base-300"}`}>
+            <table className="min-w-full text-sm">
+              <thead className={tableHeaderBg}>
                 <tr>
                   <th className="px-4 py-3 text-left">#</th>
                   <th className="px-4 py-3 text-left">Name</th>
@@ -156,33 +157,37 @@ export default function ManageContests() {
                   <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y">
+              <tbody>
                 {contests.map((c, idx) => (
-                  <tr key={c._id} className="hover:bg-gray-50 dark:hover:bg-gray-900">
-                    <td className="px-4 py-3 whitespace-nowrap">{idx + 1}</td>
-                    <td className="px-4 py-3 whitespace-nowrap max-w-xs">{c.name}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{c.type}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{c.email || c.senderEmail || "—"}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-center">{c.participantsCount || 0}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{c.prize ? `${c.prize}` : "—"}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      {c.deadline ? new Date(c.deadline).toLocaleString() : "—"}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                  <tr key={c._id} className={`${rowBg} ${rowHoverBg} border-t ${dark ? "border-gray-700" : "border-base-300"} transition-colors`}>
+                    <td className="px-4 py-3">{idx + 1}</td>
+                    <td className="px-4 py-3 max-w-xs">{c.name}</td>
+                    <td className="px-4 py-3">{c.type}</td>
+                    <td className="px-4 py-3">{c.email || c.senderEmail || "—"}</td>
+                    <td className="px-4 py-3 text-center">{c.participantsCount || 0}</td>
+                    <td className="px-4 py-3">{c.prize || "—"}</td>
+                    <td className="px-4 py-3">{c.deadline ? new Date(c.deadline).toLocaleString() : "—"}</td>
+                    <td className="px-4 py-3">
                       <span
                         className={`px-2 py-1 rounded-full text-sm ${
                           c.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
+                            ? dark
+                              ? "bg-yellow-900 text-yellow-200"
+                              : "bg-yellow-100 text-yellow-800"
                             : c.status === "confirmed"
-                            ? "bg-green-100 text-green-800"
+                            ? dark
+                              ? "bg-green-900 text-green-200"
+                              : "bg-green-100 text-green-800"
+                            : dark
+                            ? "bg-red-900 text-red-200"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
                         {c.status || "pending"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <div className="flex gap-2 justify-center">
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2 justify-center flex-wrap">
                         <button
                           onClick={() => updateStatus(c._id, "confirmed")}
                           disabled={actionLoadingId === c._id || c.status === "confirmed"}
@@ -190,7 +195,6 @@ export default function ManageContests() {
                         >
                           {actionLoadingId === c._id ? "..." : "Confirm"}
                         </button>
-
                         <button
                           onClick={() => updateStatus(c._id, "rejected")}
                           disabled={actionLoadingId === c._id || c.status === "rejected"}
@@ -198,7 +202,6 @@ export default function ManageContests() {
                         >
                           {actionLoadingId === c._id ? "..." : "Reject"}
                         </button>
-
                         <button
                           onClick={() => handleDelete(c._id)}
                           disabled={actionLoadingId === c._id}
@@ -214,32 +217,37 @@ export default function ManageContests() {
             </table>
           </div>
 
-          {/* CARD / LIST for small screens */}
+          {/* Mobile Cards */}
           <div className="md:hidden space-y-4">
             {contests.map((c, idx) => (
-              <div key={c._id} className="p-4 bg-white dark:bg-gray-800 rounded shadow-sm border">
+              <div key={c._id} className={`p-4 rounded shadow-sm border ${dark ? "bg-[#0b132b] border-gray-700 text-gray-100" : "bg-white border-base-300 text-gray-900"}`}>
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="text-lg font-semibold">{c.name}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm opacity-70">
                       {c.type} • {c.email || c.senderEmail || "—"}
                     </div>
                     <div className="text-sm mt-2">{c.description ? c.description.slice(0, 120) : "No description"}</div>
                   </div>
-
                   <div className="text-right">
-                    <div className="text-sm">{c.prize ? `${c.prize}` : "—"}</div>
-                    <div className="text-xs text-gray-500">{c.deadline ? new Date(c.deadline).toLocaleString() : "—"}</div>
+                    <div className="text-sm">{c.prize || "—"}</div>
+                    <div className="text-xs opacity-60">{c.deadline ? new Date(c.deadline).toLocaleString() : "—"}</div>
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2 items-center">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
                       c.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
+                        ? dark
+                          ? "bg-yellow-900 text-yellow-200"
+                          : "bg-yellow-100 text-yellow-800"
                         : c.status === "confirmed"
-                        ? "bg-green-100 text-green-800"
+                        ? dark
+                          ? "bg-green-900 text-green-200"
+                          : "bg-green-100 text-green-800"
+                        : dark
+                        ? "bg-red-900 text-red-200"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
@@ -253,7 +261,6 @@ export default function ManageContests() {
                   >
                     {actionLoadingId === c._id ? "..." : "Confirm"}
                   </button>
-
                   <button
                     onClick={() => updateStatus(c._id, "rejected")}
                     disabled={actionLoadingId === c._id || c.status === "rejected"}
@@ -261,7 +268,6 @@ export default function ManageContests() {
                   >
                     {actionLoadingId === c._id ? "..." : "Reject"}
                   </button>
-
                   <button
                     onClick={() => handleDelete(c._id)}
                     disabled={actionLoadingId === c._id}

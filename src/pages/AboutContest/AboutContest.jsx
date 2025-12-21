@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 const AboutContest = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const { dark } = useAuth();
 
   const faqs = [
     {
@@ -21,7 +23,7 @@ const AboutContest = () => {
     {
       question: "How are winners selected?",
       answer:
-        "Depending on contest rules—automatic scoring, manual selection, or voting.",
+        "Winners are selected based on contest rules such as automatic scoring, manual evaluation, or community voting.",
     },
   ];
 
@@ -30,31 +32,65 @@ const AboutContest = () => {
   };
 
   return (
-    <div className="min-h-screen w-11/12 mx-auto py-10 transition bg-white dark:bg-gray-900 dark:text-white">
+    <div
+      className={`min-h-screen w-11/12 mx-auto py-14 transition-colors duration-300
+        ${dark ? "bg-[#0b132b] text-gray-100" : "bg-base-100 text-gray-900"}`}
+    >
       {/* HEADER */}
-      <h1 className="text-3xl md:text-5xl font-bold text-primary text-center mb-6">
+      <h1
+        className={`text-3xl md:text-5xl font-bold text-center mb-6
+          ${dark ? "text-blue-300" : "text-primary"}`}
+      >
         About ContestHub
       </h1>
 
-      <p className="text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-10">
+      <p
+        className={`text-center max-w-3xl mx-auto mb-14
+          ${dark ? "text-gray-300" : "text-gray-600"}`}
+      >
         ContestHub is a modern contest creation and participation platform,
         designed for creators and users to run competitions, track progress,
         manage winners, and enjoy real-time interactive features.
       </p>
 
       {/* ABOUT CARDS */}
-      <div className="grid md:grid-cols-2 gap-8 mt-8">
-        <div className="p-6 bg-base-200 dark:bg-gray-800 rounded-xl shadow-md border border-base-300 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-primary mb-3">🎯 Our Mission</h2>
-          <p className="text-gray-700 dark:text-gray-300">
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Mission */}
+        <div
+          className={`p-7 rounded-xl shadow-md border transition-colors
+            ${dark
+              ? "bg-[#1c2541] border-gray-700"
+              : "bg-base-200 border-base-300"}`}
+        >
+          <h2
+            className={`text-xl font-semibold mb-3
+              ${dark ? "text-blue-300" : "text-primary"}`}
+          >
+            Our Mission
+          </h2>
+          <p className={dark ? "text-gray-300" : "text-gray-700"}>
             To make contest creation simple, engaging, and transparent for
             everyone—from small communities to large organizations.
           </p>
         </div>
 
-        <div className="p-6 bg-base-200 dark:bg-gray-800 rounded-xl shadow-md border border-base-300 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-primary mb-3">⚡ Why ContestHub?</h2>
-          <ul className="list-disc ml-5 text-gray-700 dark:text-gray-300 space-y-1">
+        {/* Why ContestHub */}
+        <div
+          className={`p-7 rounded-xl shadow-md border transition-colors
+            ${dark
+              ? "bg-[#1c2541] border-gray-700"
+              : "bg-base-200 border-base-300"}`}
+        >
+          <h2
+            className={`text-xl font-semibold mb-3
+              ${dark ? "text-blue-300" : "text-primary"}`}
+          >
+            Why ContestHub?
+          </h2>
+          <ul
+            className={`list-disc ml-5 space-y-1
+              ${dark ? "text-gray-300" : "text-gray-700"}`}
+          >
             <li>Role-based dashboards (Admin, Creator, User)</li>
             <li>Secure login & Google authentication</li>
             <li>Create, join & manage contests easily</li>
@@ -66,7 +102,10 @@ const AboutContest = () => {
       </div>
 
       {/* FAQ SECTION */}
-      <h2 className="text-3xl font-bold text-center text-primary mt-16 mb-8">
+      <h2
+        className={`text-3xl font-bold text-center mt-20 mb-10
+          ${dark ? "text-blue-300" : "text-primary"}`}
+      >
         Frequently Asked Questions
       </h2>
 
@@ -74,23 +113,32 @@ const AboutContest = () => {
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="border rounded-xl overflow-hidden bg-base-200 dark:bg-gray-800 dark:border-gray-700"
+            className={`rounded-xl overflow-hidden border transition-colors
+              ${dark
+                ? "bg-[#1c2541] border-gray-700"
+                : "bg-base-200 border-base-300"}`}
           >
             {/* Accordion Header */}
             <button
               onClick={() => toggleAccordion(index)}
-              className="w-full text-left px-5 py-4 font-semibold flex justify-between items-center"
+              className={`w-full px-6 py-4 font-semibold flex justify-between items-center text-left
+                hover:bg-opacity-80 transition
+                ${dark ? "hover:bg-[#233554]" : "hover:bg-base-300"}`}
             >
-              <span>{index + 1}. {faq.question}</span>
-
-              <span className="text-xl">
+              <span>
+                {index + 1}. {faq.question}
+              </span>
+              <span className="text-2xl font-bold">
                 {openIndex === index ? "−" : "+"}
               </span>
             </button>
 
             {/* Accordion Body */}
             {openIndex === index && (
-              <div className="px-5 pb-4 text-gray-700 dark:text-gray-300">
+              <div
+                className={`px-6 pb-5 leading-relaxed
+                  ${dark ? "text-gray-300" : "text-gray-700"}`}
+              >
                 {faq.answer}
               </div>
             )}

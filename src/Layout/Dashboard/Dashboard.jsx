@@ -4,7 +4,6 @@ import {
   RiTrophyLine,
   RiUserSettingsLine,
   RiCheckboxCircleLine,
-  RiPenNibLine,
 } from "react-icons/ri";
 import { CiCirclePlus, CiViewList } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
@@ -13,241 +12,188 @@ import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
 
 const Dashboard = () => {
-  const { dbUser } = useAuth();
-  const { role } = useRole(); // 'admin', 'creator', or normal user
+  const { dbUser, dark } = useAuth();
+  const { role } = useRole();
+
+  const baseBg = dark ? "bg-[#0b132b] text-gray-100" : "bg-base-100 text-gray-900";
+  const sidebarBg = dark ? "bg-[#111c44]" : "bg-base-200";
+  const hoverBg = dark ? "hover:bg-[#1e2a5a]" : "hover:bg-base-300";
+
+  const activeClass =
+    "bg-primary text-primary-content rounded-xl border-l-4 border-blue-400";
 
   return (
-    <>
-      <div className="drawer lg:drawer-open">
-        <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+    <div className={`drawer lg:drawer-open min-h-screen ${baseBg}`}>
+      <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
 
-        <div className="drawer-content">
-          <nav className="navbar w-full bg-base-300">
-            <label
-              htmlFor="my-drawer-4"
-              aria-label="open sidebar"
-              className="btn btn-square btn-ghost"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2"
-                fill="none"
-                stroke="currentColor"
-                className="my-1.5 inline-block size-5"
-              >
-                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                <path d="M9 4v16"></path>
-                <path d="M14 10l2 2l-2 2"></path>
-              </svg>
-            </label>
-            <div className="px-4 cursor-default">Dashboard</div>
-          </nav>
-
-          <div className="p-4">
-            <Outlet />
-          </div>
-        </div>
-
-        <div className="drawer-side overflow-visible">
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="drawer-content flex flex-col">
+        {/* TOP NAVBAR */}
+        <nav
+          className={`sticky top-0 z-20 h-14 flex items-center px-4 shadow-sm
+            ${dark ? "bg-[#111c44]" : "bg-base-300"}`}
+        >
           <label
-            htmlFor="my-drawer-4"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
+            htmlFor="dashboard-drawer"
+            className="btn btn-sm btn-ghost lg:hidden"
+          >
+            ☰
+          </label>
+          <h2 className="ml-3 font-semibold text-sm opacity-80">
+            Dashboard Panel
+          </h2>
+        </nav>
 
-          <div className="flex min-h-full flex-col bg-base-200 is-drawer-close:w-17 is-drawer-open:w-64">
-            {/* User Info */}
-            <div className="w-full px-4 py-[13.5px] flex items-center gap-3 border-b border-base-300">
-              <div className="avatar">
-                <div className="w-9 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
-                  <img src={dbUser?.image} alt={dbUser?.name || "User"} />
-                </div>
-              </div>
-              <div className="is-drawer-close:hidden">
-                <p className="text-sm font-semibold">
-                  {dbUser?.name || "User"}
-                </p>
-                <p className="text-xs text-gray-500">Dashboard</p>
-              </div>
-            </div>
-
-            {/* Menu */}
-            <ul className="menu w-full grow gap-3 p-4 pt-6">
-              {/* Always Visible Links */}
-              <li className="tooltip tooltip-right before:z-50" data-tip="Home">
-                <NavLink to="/">
-                  <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                    <RiHome4Line className="text-3xl" />
-                    <span className="is-drawer-close:hidden">Home</span>
-                  </button>
-                </NavLink>
-              </li>
-              
-              <li
-                className="tooltip tooltip-right before:z-50"
-                data-tip="Profile"
-              >
-                <NavLink
-                  to="/dashboard/profile"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "bg-primary text-primary-content rounded-3xl"
-                      : ""
-                  }
-                >
-                  <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                    <CgProfile className="text-3xl" />
-                    <span className="is-drawer-close:hidden">Profile</span>
-                  </button>
-                </NavLink>
-              </li>
-
-              {/* Creator-routes */}
-              {role === "creator" && (
-                <>
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="My Contests"
-                  >
-                    <NavLink
-                      to="/dashboard/my-contests"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <CiViewList className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          My Contests
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="Apply as Creator"
-                  >
-                    <NavLink
-                      to="/dashboard/apply-creator"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <RiTeamLine className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          Apply as Creator
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="Add Contest"
-                  >
-                    <NavLink
-                      to="/dashboard/add-contest"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <CiCirclePlus className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          Add Contest
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-                </>
-              )}
-
-
-
-              {/* Admin Only Links */}
-              {role === "admin" && (
-                <>
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="Manage Contests"
-                  >
-                    <NavLink
-                      to="/dashboard/manage-contests"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <RiTrophyLine className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          Manage Contests
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="Manage Users"
-                  >
-                    <NavLink
-                      to="/dashboard/manage-users"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <RiUserSettingsLine className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          Manage Users
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-
-                  <li
-                    className="tooltip tooltip-right before:z-50"
-                    data-tip="Approve Creators"
-                  >
-                    <NavLink
-                      to="/dashboard/approve-creators"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-content rounded-3xl"
-                          : ""
-                      }
-                    >
-                      <button className="w-full flex items-center justify-center lg:justify-start gap-4">
-                        <RiCheckboxCircleLine className="text-3xl" />
-                        <span className="is-drawer-close:hidden">
-                          Approve Creators
-                        </span>
-                      </button>
-                    </NavLink>
-                  </li>
-                </>
-              )}
-
-            </ul>
-          </div>
+        {/* PAGE CONTENT */}
+        <div className="p-6">
+          <Outlet />
         </div>
       </div>
-    </>
+
+      {/* ================= SIDEBAR ================= */}
+      <div className="drawer-side">
+        <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
+
+        <aside
+          className={`w-64 min-h-full flex flex-col border-r
+            ${sidebarBg}
+            ${dark ? "border-gray-700" : "border-base-300"}`}
+        >
+          {/* USER INFO */}
+          <div
+            className={`px-5 py-4 flex items-center gap-3 border-b
+              ${dark ? "border-gray-700" : "border-base-300"}`}
+          >
+            <div className="avatar">
+              <div className="w-10 rounded-full ring ring-primary ring-offset-2 ring-offset-transparent">
+                <img src={dbUser?.image} alt="User" />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-semibold">
+                {dbUser?.name || "User"}
+              </p>
+              <p className="text-xs opacity-60 capitalize">
+                {role || "member"}
+              </p>
+            </div>
+          </div>
+
+          {/* MENU */}
+          <ul className="menu px-3 py-4 gap-1 text-sm">
+            {/* HOME */}
+            <li>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                   ${isActive ? activeClass : ""}
+                   ${hoverBg}`
+                }
+              >
+                <RiHome4Line className="text-xl" />
+                Home
+              </NavLink>
+            </li>
+
+            {/* PROFILE */}
+            <li>
+              <NavLink
+                to="/dashboard/profile"
+                className={({ isActive }) =>
+                  `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                   ${isActive ? activeClass : ""}
+                   ${hoverBg}`
+                }
+              >
+                <CgProfile className="text-xl" />
+                Profile
+              </NavLink>
+            </li>
+
+            {/* CREATOR ROUTES */}
+            {role === "creator" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard/my-contests"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                       ${isActive ? activeClass : ""}
+                       ${hoverBg}`
+                    }
+                  >
+                    <CiViewList className="text-xl" />
+                    My Contests
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/add-contest"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                       ${isActive ? activeClass : ""}
+                       ${hoverBg}`
+                    }
+                  >
+                    <CiCirclePlus className="text-xl" />
+                    Add Contest
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* ADMIN ROUTES */}
+            {role === "admin" && (
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard/manage-contests"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                       ${isActive ? activeClass : ""}
+                       ${hoverBg}`
+                    }
+                  >
+                    <RiTrophyLine className="text-xl" />
+                    Manage Contests
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/manage-users"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                       ${isActive ? activeClass : ""}
+                       ${hoverBg}`
+                    }
+                  >
+                    <RiUserSettingsLine className="text-xl" />
+                    Manage Users
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/approve-creators"
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-4 py-3 rounded-xl transition
+                       ${isActive ? activeClass : ""}
+                       ${hoverBg}`
+                    }
+                  >
+                    <RiCheckboxCircleLine className="text-xl" />
+                    Approve Creators
+                  </NavLink>
+                </li>
+              </>
+            )}
+          </ul>
+        </aside>
+      </div>
+    </div>
   );
 };
 

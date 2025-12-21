@@ -48,7 +48,17 @@ const Navbar = () => {
   );
 
   return (
-    <nav className={`shadow-sm transition-colors duration-300 ${dark ? "bg-gray-900 text-white" : "bg-base-300 text-gray-900"}`}>
+    <nav
+  className={`
+    sticky top-0 z-[999]
+    transition-all duration-300 ease-in-out
+    backdrop-blur-md
+    ${dark
+      ? "bg-gray-900/70 text-white shadow-lg shadow-black/30"
+      : "bg-white/70 text-gray-900 shadow-md shadow-gray-200"}
+  `}
+>
+
       <div className="navbar md:w-11/12 md:mx-auto">
 
         {/* Left section */}

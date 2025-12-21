@@ -1,16 +1,26 @@
-import React from 'react';
-import Banner from './Banner';
-import PopularContest from './PopularContest';
-import Winner from './Winner';
+import React from "react";
+import Banner from "./Banner";
+import PopularContest from "./PopularContest";
+import Winner from "./Winner";
+import useAuth from "../../hooks/useAuth";
 
 const Home = () => {
-    return (
-        <div>
-            <Banner/>
-            <PopularContest/>
-            <Winner/>
-        </div>
-    );
+  const { dark } = useAuth();
+
+  return (
+    <div
+      className={`min-h-screen transition-colors duration-300
+        ${
+          dark
+            ? "bg-gradient-to-br from-[#0b132b] via-[#1a1f3d] to-[#2d1b69]"
+            : "bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50"
+        }`}
+    >
+      <Banner />
+      <PopularContest />
+      <Winner />
+    </div>
+  );
 };
 
 export default Home;
