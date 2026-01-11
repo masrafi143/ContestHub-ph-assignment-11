@@ -38,6 +38,9 @@ const Navbar = () => {
       <li>
         <NavLink to="/how-it-works">How it works</NavLink>
       </li>
+      <li>
+        <NavLink to="/privacy-policy">Privacy Policy</NavLink>
+      </li>
       {/* {
         role === 'admin' && <>
       <li><NavLink to="/manage-contests">Manage Contest</NavLink></li>
@@ -127,7 +130,7 @@ const Navbar = () => {
           </button>
 
           {/* Auth section */}
-          {dbUser ? (
+          {user ? (
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="cursor-pointer">
                 <img
@@ -143,7 +146,7 @@ const Navbar = () => {
                 }`}
               >
                 <li className="text-center font-bold text-lg">{displayName}</li>
-                <li className="text-center text-sm text-primary">
+                <li className="text-center text-blue-300 text-sm">
                   {displayEmail}
                 </li>
                 <li className="mt-2 space-y-2">

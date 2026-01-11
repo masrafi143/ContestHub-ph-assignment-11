@@ -11,6 +11,8 @@ const MyProfile = () => {
   const [photoURL, setPhotoURL] = useState(
     dbUser?.image || user?.photoURL || ""
   );
+  const [address, setAddress] = useState(dbUser?.address || "");
+
   const [updating, setUpdating] = useState(false);
 
   if (loading) {
@@ -27,25 +29,31 @@ const MyProfile = () => {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+
     if (!name.trim())
       return Swal.fire("Error", "Name cannot be empty", "error");
 
     setUpdating(true);
     try {
       await updateUserProfile({ displayName: name, photoURL });
-      const res = await fetch(
-        `https://contest-hub-server-gold.vercel.app/users/${dbUser?._id || user?.email}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, image: photoURL }),
-        }
-      );
+
+      const res = await fetch(`https://contest-hub-server-gold.vercel.app/users/${dbUser?._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          image: photoURL,
+          address,
+        }),
+      });
+
       if (!res.ok) throw new Error("DB update failed");
+
       await fetchDbUser(user?.email);
       setIsEditing(false);
       Swal.fire("Success!", "Profile updated!", "success");
     } catch (err) {
+      console.error(err);
       Swal.fire("Error", "Update failed", "error");
     } finally {
       setUpdating(false);
@@ -61,9 +69,7 @@ const MyProfile = () => {
       {/* Animated Background */}
       <div
         className={`absolute inset-0 ${
-          dark
-            ? "bg-[#111c44]/50 animate-pulse"
-            : "bg-white/0 animate-pulse"
+          dark ? "bg-[#111c44]/50 animate-pulse" : "bg-white/0 animate-pulse"
         }`}
       ></div>
 
@@ -89,8 +95,7 @@ const MyProfile = () => {
                     <img
                       src={
                         dbUser?.image ||
-                        user?.photoURL ||
-                        "https://i.ibb.co/5Yc6f8d/avatar-placeholder.png"
+                        user?.photoURL
                       }
                       alt="Profile"
                       className="object-cover"
@@ -113,7 +118,11 @@ const MyProfile = () => {
               >
                 {dbUser?.name || user?.displayName}
               </h1>
-              <p className={`${dark ? "text-gray-300" : "text-gray-600"} text-lg mt-2`}>
+              <p
+                className={`${
+                  dark ? "text-gray-300" : "text-gray-600"
+                } text-lg mt-2`}
+              >
                 {user?.email}
               </p>
 
@@ -121,11 +130,52 @@ const MyProfile = () => {
               <div className="mt-4">
                 <span
                   className={`px-6 py-2 rounded-full font-semibold shadow-lg capitalize ${
-                    dark ? "bg-[#0b132b] text-gray-100" : "bg-gray-200 text-gray-900"
+                    dark
+                      ? "bg-[#0b132b] text-gray-100"
+                      : "bg-gray-200 text-gray-900"
                   }`}
                 >
                   {dbUser?.role || "user"}
                 </span>
+              </div>
+              {/* Address - modern card style */}
+              <div className="mt-6 w-full max-w-md mx-auto">
+                <div
+                  className={`flex items-center p-4 rounded-2xl shadow-lg transition-all duration-300
+      ${
+        dark
+          ? "bg-gradient-to-r from-[#111c44] to-[#0b132b] text-gray-100 shadow-cyan-900/50 hover:scale-105"
+          : "bg-gradient-to-r from-indigo-50 via-white to-blue-50 text-gray-900 shadow-indigo-300/50 hover:scale-105"
+      }`}
+                >
+                  <div className="flex-shrink-0 mr-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8 text-cyan-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Address</h3>
+                    <p className="mt-1 text-sm opacity-90">
+                      {dbUser?.address || "Not provided"}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <button
@@ -178,6 +228,19 @@ const MyProfile = () => {
                       value={photoURL}
                       onChange={(e) => setPhotoURL(e.target.value)}
                       placeholder="https://..."
+                      className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+                        dark
+                          ? "bg-[#0b132b] border-[#111c44] text-gray-100 focus:ring-cyan-500"
+                          : "bg-gray-100 border-gray-300 text-gray-900 focus:ring-cyan-500"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2">Bio</label>
+                    <textarea
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      rows={3}
                       className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
                         dark
                           ? "bg-[#0b132b] border-[#111c44] text-gray-100 focus:ring-cyan-500"

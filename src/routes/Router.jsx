@@ -27,6 +27,9 @@ import ApplyCreator from "../pages/ContestCreator/ApplyCreator";
 import ManageContests from "../pages/Contest/AdminManageContests/ManageContests";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import SubmittedTasks from "../pages/SubmittedTasks/SubmittedTasks";
+import MyParticipatedContests from "../pages/Contest/MyParticipatedContests/MyParticipatedContests";
+import UserRoute from "./UserRoute";
+import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +55,10 @@ export const router = createBrowserRouter([
       {
         path: "how-it-works",
         Component: HowItWorks,
+      },
+      {
+        path: "privacy-policy",
+        Component: PrivacyPolicy,
       },
       {
         path: "all-contests",
@@ -88,6 +95,14 @@ export const router = createBrowserRouter([
         Component: MyProfile,
       },
       {
+        path: "my-participated",
+        element: (
+          <UserRoute>
+            <MyParticipatedContests />
+          </UserRoute>
+        ),
+      },
+      {
         path: "manage-users",
         element: (
           <AdminRoute>
@@ -114,7 +129,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "submitted-tasks",
+        path: ":contestId/submitted-tasks",
         // Component: AddContest,
         element: (
           <CreatorRoute>

@@ -4,6 +4,7 @@ import {
   RiTrophyLine,
   RiUserSettingsLine,
   RiCheckboxCircleLine,
+  RiListCheck2,
 } from "react-icons/ri";
 import { CiCirclePlus, CiViewList } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
@@ -111,6 +112,23 @@ const Dashboard = () => {
               </NavLink>
             </li>
 
+            {/* USER ROUTES */}
+            {role === "user" && (
+              <li>
+                <NavLink
+                  to="/dashboard/my-participated"
+                  className={({ isActive }) =>
+                    `flex items-center gap-4 px-4 py-3 rounded-xl transition
+         ${isActive ? activeClass : ""}
+         ${hoverBg}`
+                  }
+                >
+                  <RiListCheck2 className="text-xl" />
+                  My Participated Contests
+                </NavLink>
+              </li>
+            )}
+
             {/* CREATOR ROUTES */}
             {role === "creator" && (
               <>
@@ -142,7 +160,7 @@ const Dashboard = () => {
                   </NavLink>
                 </li>
                 {/* Submitted Tasks Route */}
-                <li>
+                {/* <li>
                   <NavLink
                     to="/dashboard/submitted-tasks"
                     className={({ isActive }) =>
@@ -154,7 +172,7 @@ const Dashboard = () => {
                     <RiTeamLine className="text-xl" />
                     Submitted Tasks
                   </NavLink>
-                </li>
+                </li> */}
               </>
             )}
 

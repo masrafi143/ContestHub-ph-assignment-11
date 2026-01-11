@@ -126,7 +126,7 @@ const AllContests = () => {
           No contests found for the selected filters.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((c) => (
             <article
               key={c._id}

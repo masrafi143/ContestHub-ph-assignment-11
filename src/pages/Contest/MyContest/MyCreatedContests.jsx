@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../provider/AuthProvider";
 import { useNavigate } from "react-router";
+import useAuth from "../../../hooks/useAuth";
 
 const MyCreatedContests = () => {
   const { user } = useContext(AuthContext);
+  const { dark } = useAuth();
+
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,10 +41,7 @@ const MyCreatedContests = () => {
   }, [userEmail]);
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this contest?"
-    );
-    if (!confirm) return;
+    if (!window.confirm("Are you sure you want to delete this contest?")) return;
 
     try {
       const res = await fetch(`https://contest-hub-server-gold.vercel.app/contests/${id}`, {
@@ -49,7 +49,7 @@ const MyCreatedContests = () => {
       });
       const result = await res.json();
       if (result.deletedCount) {
-        setContests(contests.filter((c) => c._id !== id));
+        setContests((prev) => prev.filter((c) => c._id !== id));
         alert("Contest deleted successfully!");
       } else {
         alert("Failed to delete contest.");
@@ -60,13 +60,20 @@ const MyCreatedContests = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (loading)
+    return (
+      <p className={`text-center mt-10 ${dark ? "text-gray-300" : "text-gray-700"}`}>
+        Loading...
+      </p>
+    );
+
   if (!userEmail)
     return (
       <p className="text-center mt-10 text-gray-500">
         Please log in to see your created contests.
       </p>
     );
+
   if (contests.length === 0)
     return (
       <p className="text-center mt-10 text-gray-500">
@@ -75,83 +82,73 @@ const MyCreatedContests = () => {
     );
 
   return (
-    <div className="w-11/12 mx-auto py-10 min-h-screen">
+    <div
+      className={`w-11/12 mx-auto py-10 min-h-screen transition-colors ${
+        dark ? "bg-[#0f172a] text-gray-100" : "bg-white text-gray-900"
+      }`}
+    >
       <h1 className="text-3xl font-bold mb-6 text-center">My Contests</h1>
 
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border-collapse border border-gray-300 dark:border-gray-600">
-          <thead className="bg-gray-100 dark:bg-gray-700">
+        <table
+          className={`table-auto w-full border-collapse border ${
+            dark ? "border-gray-600" : "border-gray-300"
+          }`}
+        >
+          <thead className={dark ? "bg-gray-800" : "bg-gray-100"}>
             <tr>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                #
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Name
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Type
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Prize
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Deadline
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Status
-              </th>
-              <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                Actions
-              </th>
+              {["#", "Name", "Type", "Prize", "Deadline", "Status", "Actions"].map(
+                (h) => (
+                  <th
+                    key={h}
+                    className={`border px-4 py-2 ${
+                      dark ? "border-gray-600" : "border-gray-300"
+                    }`}
+                  >
+                    {h}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody>
             {contests.map((item, index) => (
               <tr
                 key={item._id}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                className={`hover:${dark ? "bg-gray-800" : "bg-gray-50"}`}
               >
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                  {item.name || "—"}
-                </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                  {item.type || "—"}
-                </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <td className="border px-4 py-2 text-center">{index + 1}</td>
+                <td className="border px-4 py-2">{item.name || "—"}</td>
+                <td className="border px-4 py-2">{item.type || "—"}</td>
+                <td className="border px-4 py-2">
                   {item.prize ? `${item.prize} Tk` : "—"}
                 </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                <td className="border px-4 py-2">
                   {item.deadline
                     ? new Date(item.deadline).toLocaleString()
                     : "—"}
                 </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
-                  {item.status || "Pending"}
-                </td>
-                <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 flex gap-2">
-                  {/* Edit button */}
+                <td className="border px-4 py-2">{item.status || "Pending"}</td>
+                <td className="border px-4 py-2 flex gap-2">
                   <button
-                    onClick={() => navigate(`/edit-contest/${item._id}`)} // navigate to edit page with ID
-                    className={`btn btn-sm btn-warning `}
+                    onClick={() => navigate(`/edit-contest/${item._id}`)}
+                    className="btn btn-sm btn-warning"
                   >
                     Edit
                   </button>
 
-                  {/* Delete button (only if Pending) */}
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className={`btn btn-sm btn-error `}
+                    className="btn btn-sm btn-error"
                   >
                     Delete
                   </button>
 
-                  {/* See Submissions button */}
                   <button
                     className="btn btn-sm btn-info"
-                    onClick={() => alert("Navigate to submissions page")}
+                    onClick={() =>
+                      navigate(`/dashboard/${item._id}/submitted-tasks`)
+                    }
                   >
                     See Submissions
                   </button>
@@ -164,5 +161,5 @@ const MyCreatedContests = () => {
     </div>
   );
 };
- 
+
 export default MyCreatedContests;

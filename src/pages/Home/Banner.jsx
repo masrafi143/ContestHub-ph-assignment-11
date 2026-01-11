@@ -11,7 +11,7 @@ const Banner = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (!search.trim()) return;
-    navigate(`/contests?search=${search}`);
+    navigate(`/all-contests?search=${search}`);
   };
 
   return (

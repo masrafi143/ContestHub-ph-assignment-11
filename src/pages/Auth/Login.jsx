@@ -1,19 +1,19 @@
-import React, { useContext, useRef, useState } from "react";
+import React, {  useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { FaEye, FaEyeSlash, FaMoon, FaSun } from "react-icons/fa";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import SocialLogin from "./SocialLogin";
+import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
   const {
     signInUser,
-    signInWithGoogle,
     forgotPassword,
     dark,
     setDark,
-  } = useContext(AuthContext);
+  } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();

@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 
 const SubmittedTasks = () => {
+  const { contestId } = useParams();
   const { dbUser, dark } = useAuth();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!dbUser?.email) return;
+    if (!contestId) return;
+
     const fetchSubmissions = async () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `https://contest-hub-server-gold.vercel.app/submitted-tasks?creatorEmail=${dbUser.email}`
+          `https://contest-hub-server-gold.vercel.app/submitted-tasks?contestId=${contestId}`
         );
         setSubmissions(res.data);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch submissions:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchSubmissions();
-  }, [dbUser]);
+  }, [contestId]);
 
   const handleDeclareWinner = async (id) => {
     try {
-      const res = await axios.patch(`https://contest-hub-server-gold.vercel.app/submitted-tasks/${id}/winner`);
+      const res = await axios.patch(
+        `https://contest-hub-server-gold.vercel.app/submitted-tasks/${id}/winner`
+      );
+
       if (res.data.success) {
-        alert("Winner declared successfully!");
         setSubmissions((prev) =>
           prev.map((s) =>
             s._id === id ? { ...s, declaredWinner: true } : s
@@ -48,6 +54,7 @@ const SubmittedTasks = () => {
   return (
     <div className={`w-full ${dark ? "text-gray-100" : "text-gray-900"}`}>
       <h2 className="text-2xl font-bold mb-6">Submitted Tasks</h2>
+
       <div className="space-y-4">
         {submissions.map((s) => (
           <div
@@ -57,16 +64,22 @@ const SubmittedTasks = () => {
             }`}
           >
             <p>
-              <span className="font-semibold">Participant:</span> {s.participantName} ({s.participantEmail})
+              <span className="font-semibold">Participant:</span>{" "}
+              {s.participantName} ({s.participantEmail})
             </p>
+
             <p className="mt-2 whitespace-pre-line">
               <span className="font-semibold">Submission:</span> {s.submission}
             </p>
+
             <p className="mt-2">
               <span className="font-semibold">Contest:</span> {s.contestName}
             </p>
+
             {s.declaredWinner ? (
-              <p className="mt-2 text-green-400 font-semibold">Winner Declared</p>
+              <p className="mt-2 text-green-400 font-semibold">
+                Winner Declared
+              </p>
             ) : (
               <button
                 onClick={() => handleDeclareWinner(s._id)}

@@ -2,6 +2,10 @@ import React from "react";
 import Banner from "./Banner";
 import PopularContest from "./PopularContest";
 import Winner from "./Winner";
+import Features from "./Features";
+import Testimonials from "./Testimonials";
+import Statistics from "./Statistics";
+import ContactUs from "./ContactUs";
 import useAuth from "../../hooks/useAuth";
 
 const Home = () => {
@@ -19,6 +23,10 @@ const Home = () => {
       <Banner />
       <PopularContest />
       <Winner />
+      <Features />
+      <Statistics />
+      <Testimonials />
+      <ContactUs />
     </div>
   );
 };

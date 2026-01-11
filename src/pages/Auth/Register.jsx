@@ -26,7 +26,8 @@ const Register = () => {
   };
 
   const handleRegister = async (data) => {
-    const { name, email, password, photoURL } = data;
+    const { name, email, password, photoURL, address } = data;
+
 
     try {
       await createUser(email, password);
@@ -44,6 +45,7 @@ const Register = () => {
         image:
           photoURL ||
           "https://imgs.search.brave.com/vLZ44Uli4ZlkgAjdMiftogg6vX7--GvMQWTk4ZDQ8zc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cmVkZGl0c3RhdGlj/LmNvbS9hdmF0YXJz/L2RlZmF1bHRzL3Yy/L2F2YXRhcl9kZWZh/dWx0XzcucG5n",
+          address
       };
 
       const res = await fetch(
@@ -119,6 +121,25 @@ const Register = () => {
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
           </div>
+          {/* Address */}
+<div>
+  <label className="text-sm font-medium">Address</label>
+  <input
+    type="text"
+    placeholder="Your address"
+    className={`input w-full mt-1
+    ${
+      dark
+        ? "bg-gray-800 text-white"
+        : "bg-gray-100 text-gray-900"
+    }`}
+    {...register("address", { required: "Address is required" })}
+  />
+  {errors.address && (
+    <p className="text-red-500 text-sm">{errors.address.message}</p>
+  )}
+</div>
+
 
           {/* Email */}
           <div>
